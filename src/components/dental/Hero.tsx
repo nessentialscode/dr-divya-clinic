@@ -1,4 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
+import { AppointmentTrigger } from "./AppointmentTrigger";
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/dental-hero.jpg";
 
@@ -21,14 +22,12 @@ export function Hero() {
           <p className="mt-4 max-w-md text-xs leading-relaxed text-hero-foreground/80 sm:mt-7 sm:text-base sm:leading-6">
             Modern dental care tailored to your needs, delivered by experienced professionals in a welcoming environment.
           </p>
-          <Button asChild className="mt-5 sm:mt-9">
-            <a href="#newsletter">
-              <span className="grid size-7 place-items-center rounded-full bg-foreground text-background">
-                <ArrowUpRight size={14} />
-              </span>
-              Book Appointment
-            </a>
-          </Button>
+          <AppointmentTrigger className="mt-5 sm:mt-9">
+            <span className="flex items-center justify-center">
+              <ArrowUpRight size={14} />
+            </span>
+            Book Appointment
+          </AppointmentTrigger>
         </div>
       </div>
     </section>
