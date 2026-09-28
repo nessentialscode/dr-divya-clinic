@@ -52,16 +52,16 @@ export function AppointmentStats({ stats }: AppointmentStatsProps) {
   ];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5 sm:gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4 w-full min-w-0">
       {cards.map((card) => (
         <div
           key={card.label}
-          className={`bg-white rounded-2xl border ${card.borderColor} shadow-[0_4px_20px_-4px_rgba(15,23,42,0.03)] p-4 sm:p-5 flex flex-col justify-between`}
+          className={`bg-white rounded-xl sm:rounded-2xl border ${card.borderColor} shadow-[0_4px_20px_-4px_rgba(15,23,42,0.03)] p-3 sm:p-5 flex flex-col justify-between min-w-0`}
         >
-          <span className="text-[10px] sm:text-[11px] font-bold tracking-wider uppercase text-slate-500">
+          <span className="text-[9px] sm:text-[11px] font-bold tracking-wider uppercase text-slate-500 leading-tight break-words">
             {card.label}
           </span>
-          <span className={`text-2xl sm:text-3xl font-extrabold mt-2 tracking-tight ${card.textColor}`}>
+          <span className={`text-xl sm:text-3xl font-extrabold mt-1.5 sm:mt-2 tracking-tight ${card.textColor}`}>
             {card.value}
           </span>
         </div>

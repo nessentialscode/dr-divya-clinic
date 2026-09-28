@@ -75,7 +75,7 @@ export function AppointmentFilters({
   const hasBranches = clinics.length > 0;
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/80 shadow-[0_4px_20px_-4px_rgba(15,23,42,0.04)] p-4 sm:p-5 space-y-4">
+    <div className="bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 shadow-[0_4px_20px_-4px_rgba(15,23,42,0.04)] p-3.5 sm:p-5 space-y-3.5 sm:space-y-4 w-full min-w-0">
       {/* Search Bar */}
       <div className="relative">
         <Search

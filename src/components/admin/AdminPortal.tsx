@@ -334,8 +334,8 @@ export function AdminPortal({ userEmail, onSignOut }: AdminPortalProps) {
   }, [appointments, filters, doctorMap, serviceMap]);
 
   return (
-    <div className="min-h-screen bg-[#f4f8f6] text-slate-800 font-sans p-3 sm:p-5 lg:p-7 selection:bg-teal-100">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#f4f8f6] text-slate-800 font-sans p-2.5 sm:p-5 lg:p-7 selection:bg-teal-100">
+      <div className="max-w-7xl w-full mx-auto space-y-4 sm:space-y-6 min-w-0">
         {/* Header (Screenshot 2) */}
         <AdminHeader
           adminEmail={userEmail}

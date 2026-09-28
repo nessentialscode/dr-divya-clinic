@@ -67,30 +67,30 @@ export function FeedbackModeration({
   };
 
   return (
-    <section className="bg-white rounded-2xl border border-slate-200/80 shadow-[0_4px_20px_-4px_rgba(15,23,42,0.04)] p-5 sm:p-6">
+    <section className="bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 shadow-[0_4px_20px_-4px_rgba(15,23,42,0.04)] p-3.5 sm:p-6 w-full min-w-0">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 mb-4 border-b border-slate-100">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 pb-3 sm:pb-4 mb-3 sm:mb-4 border-b border-slate-100">
         <div>
           <div className="flex items-center gap-2">
-            <MessageSquare size={16} className="text-slate-500" />
+            <MessageSquare size={16} className="text-slate-500 shrink-0" />
             <h2 className="text-xs font-bold uppercase tracking-wider text-slate-800">
               Patient Feedback Moderation
             </h2>
           </div>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-[11px] sm:text-xs text-slate-500 mt-0.5">
             Review submitted patient testimonials prior to public display
           </p>
         </div>
 
         {/* Counter Badges Matching Screenshot 3 */}
-        <div className="flex items-center gap-2 self-start sm:self-auto">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200/70">
+        <div className="flex items-center gap-1.5 flex-wrap self-start sm:self-auto">
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[11px] sm:text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200/70">
             Pending <span className="font-extrabold">{pendingCount}</span>
           </span>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/70">
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[11px] sm:text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/70">
             Approved <span className="font-extrabold">{approvedCount}</span>
           </span>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[11px] sm:text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">
             Rejected <span className="font-extrabold">{rejectedCount}</span>
           </span>
         </div>
@@ -114,7 +114,7 @@ export function FeedbackModeration({
             return (
               <div
                 key={item.id}
-                className="p-4 rounded-xl border border-slate-200/70 bg-white hover:border-slate-300 transition-colors flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+                className="p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-200/70 bg-white hover:border-slate-300 transition-colors flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-4 min-w-0"
               >
                 <div className="min-w-0 space-y-1.5 flex-1">
                   <div className="flex items-center gap-2.5 flex-wrap">
