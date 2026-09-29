@@ -10,7 +10,9 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { WhatsAppIcon, buildWhatsAppConfirmationUrl } from "@/lib/whatsapp";
 
 export interface AppointmentRecord {
   id: string;
@@ -27,6 +29,7 @@ export interface AppointmentRecord {
   // Joined or resolved fields
   doctor_name?: string | undefined;
   service_name?: string | undefined;
+  clinic_name?: string | undefined;
 }
 
 interface AppointmentDetailDialogProps {
@@ -50,6 +53,11 @@ export function AppointmentDetailDialog({
   const handleSaveStatus = async () => {
     if (status === appointment.status) {
       onOpenChange(false);
+      return;
+    }
+
+    if (appointment.status === "confirmed" && status === "cancelled") {
+      toast.error("Confirmed appointments cannot be changed to Cancelled.");
       return;
     }
 
@@ -164,9 +172,16 @@ export function AppointmentDetailDialog({
 
           {/* Status Change Selector */}
           <div>
-            <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">
-              Appointment Status
-            </label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                Appointment Status
+              </label>
+              {appointment.status === "confirmed" && (
+                <span className="text-[10px] text-amber-600 font-semibold">
+                  (Confirmed bookings cannot be cancelled)
+                </span>
+              )}
+            </div>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value as AppointmentRecord["status"])}
@@ -176,9 +191,47 @@ export function AppointmentDetailDialog({
               <option value="contacted">Contacted (Staff in touch)</option>
               <option value="confirmed">Confirmed (Appointment scheduled)</option>
               <option value="completed">Completed (Treatment done)</option>
-              <option value="cancelled">Cancelled</option>
+              {appointment.status !== "confirmed" && (
+                <option value="cancelled">Cancelled</option>
+              )}
             </select>
           </div>
+
+          {/* WhatsApp Confirmation Notification Box (appears when confirmed or current is confirmed) */}
+          {(status === "confirmed" || appointment.status === "confirmed") && (
+            <div className="p-3.5 rounded-xl border border-[#25D366]/40 bg-[#25D366]/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-start gap-2.5 min-w-0">
+                <div className="size-8 rounded-lg bg-[#25D366] text-white flex items-center justify-center shrink-0 shadow-xs">
+                  <WhatsAppIcon className="size-4 fill-white" />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-xs font-bold text-slate-900 leading-snug">
+                    Send Confirmation via WhatsApp
+                  </div>
+                  <p className="text-[11px] text-slate-600 leading-snug mt-0.5">
+                    Notify {appointment.patient_name} with clinic, doctor, and slot details.
+                  </p>
+                </div>
+              </div>
+
+              <a
+                href={buildWhatsAppConfirmationUrl({
+                  patientName: appointment.patient_name,
+                  phone: appointment.phone,
+                  clinicName: appointment.clinic_name,
+                  doctorName: appointment.doctor_name,
+                  preferredDate: appointment.preferred_date,
+                  preferredTime: appointment.preferred_time,
+                })}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-[#25D366] hover:bg-[#20ba5a] text-white shadow-xs transition-colors shrink-0 cursor-pointer"
+              >
+                <WhatsAppIcon className="size-3.5 fill-white" />
+                <span>Open WhatsApp</span>
+              </a>
+            </div>
+          )}
 
           {/* Timestamps */}
           <div className="flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-slate-100">

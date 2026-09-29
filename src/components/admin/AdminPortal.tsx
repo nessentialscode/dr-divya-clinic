@@ -137,7 +137,9 @@ export function AdminPortal({ userEmail, onSignOut }: AdminPortalProps) {
       toast.error(`Failed to update clinic: ${error.message}`);
     } else {
       toast.success(
-        newActive ? "Clinic activated for public booking" : "Clinic deactivated",
+        newActive
+          ? "Dr. Divya's Clinic is now OPEN for public booking"
+          : "Dr. Divya's Clinic is now CLOSED",
       );
     }
   };
@@ -145,6 +147,8 @@ export function AdminPortal({ userEmail, onSignOut }: AdminPortalProps) {
   // Handle doctor availability toggle (is_available, NOT active!)
   const handleToggleDoctorAvailability = async (id: string, currentAvailable: boolean) => {
     const newAvailable = !currentAvailable;
+    const targetDoc = doctors.find((d) => d.id === id);
+    const docName = targetDoc ? targetDoc.name : "Specialist";
 
     // Optimistic update
     setDoctors((prev) =>
@@ -165,8 +169,8 @@ export function AdminPortal({ userEmail, onSignOut }: AdminPortalProps) {
     } else {
       toast.success(
         newAvailable
-          ? "Specialist marked PRESENT and selectable in booking"
-          : "Specialist marked ABSENT (removed from online booking)",
+          ? `${docName} marked PRESENT`
+          : `${docName} marked ABSENT`,
       );
     }
   };
@@ -176,7 +180,13 @@ export function AdminPortal({ userEmail, onSignOut }: AdminPortalProps) {
     id: string,
     newStatus: AppointmentRecord["status"],
   ) => {
-    const prevStatus = appointments.find((a) => a.id === id)?.status;
+    const currentAppt = appointments.find((a) => a.id === id);
+    if (currentAppt?.status === "confirmed" && newStatus === "cancelled") {
+      toast.error("Confirmed appointments cannot be changed to Cancelled.");
+      return;
+    }
+
+    const prevStatus = currentAppt?.status;
 
     // Optimistic update
     setAppointments((prev) =>
@@ -294,11 +304,13 @@ export function AdminPortal({ userEmail, onSignOut }: AdminPortalProps) {
 
   // Filter appointments according to criteria
   const filteredAppointments: AppointmentRecord[] = useMemo(() => {
+    const defaultClinicName = clinics[0]?.name || "Dr. Divya's Family Dental Clinic";
     return appointments
       .map((a) => ({
         ...a,
         doctor_name: a.specialist_id ? doctorMap.get(a.specialist_id) : "Any Specialist",
         service_name: serviceMap.get(a.service_id) || "General Care",
+        clinic_name: defaultClinicName,
       }))
       .filter((a) => {
         // Search filter (patient name or phone)

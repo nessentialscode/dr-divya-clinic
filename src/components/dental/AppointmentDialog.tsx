@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CalendarDays, CheckCircle2, Loader2 } from "lucide-react";
+import { AlertCircle, CalendarDays, CheckCircle2, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -75,6 +75,7 @@ type AppointmentDialogProps = {
     onOpenChange: (open: boolean) => void;
     specialistId?: string;
     serviceId?: string;
+    isClinicOpen?: boolean;
 };
 
 export function AppointmentDialog({
@@ -82,7 +83,11 @@ export function AppointmentDialog({
     onOpenChange,
     specialistId,
     serviceId,
+    isClinicOpen: isClinicOpenProp,
 }: AppointmentDialogProps) {
+    const [clinicOpenState, setClinicOpenState] = useState<boolean>(
+        isClinicOpenProp !== undefined ? isClinicOpenProp : true
+    );
     const [services, setServices] = useState<Service[]>([]);
     const [servicesLoading, setServicesLoading] = useState(true);
     const [servicesError, setServicesError] = useState<string | null>(null);
@@ -95,6 +100,51 @@ export function AppointmentDialog({
 
     const [submitError, setSubmitError] = useState<string | null>(null);
     const [submitted, setSubmitted] = useState(false);
+
+    useEffect(() => {
+        if (isClinicOpenProp !== undefined) {
+            setClinicOpenState(isClinicOpenProp);
+        }
+    }, [isClinicOpenProp]);
+
+    useEffect(() => {
+        if (!open) return;
+        let cancelled = false;
+
+        async function fetchClinicAvailability() {
+            try {
+                const { data } = await supabase
+                    .from("clinics")
+                    .select("id, name, active")
+                    .order("display_order", { ascending: true });
+
+                if (cancelled) return;
+                if (data) {
+                    setClinicOpenState(data.length > 0 && data.some((c) => c.active === true));
+                }
+            } catch (err) {
+                console.error("Failed to check clinic availability in dialog:", err);
+            }
+        }
+
+        fetchClinicAvailability();
+
+        const channel = supabase
+            .channel("public:dialog_clinics_status_check")
+            .on(
+                "postgres_changes",
+                { event: "*", schema: "public", table: "clinics" },
+                () => {
+                    fetchClinicAvailability();
+                }
+            )
+            .subscribe();
+
+        return () => {
+            cancelled = true;
+            supabase.removeChannel(channel);
+        };
+    }, [open]);
 
     const form = useForm<AppointmentFormValues>({
         resolver: zodResolver(appointmentSchema),
@@ -255,8 +305,34 @@ export function AppointmentDialog({
         }
     }, [open, form]);
 
+    const todayIndia = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Kolkata",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+    }).format(new Date());
+
+    const tomorrowObj = new Date();
+    tomorrowObj.setDate(tomorrowObj.getDate() + 1);
+    const tomorrowIndia = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Kolkata",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+    }).format(tomorrowObj);
+
+    const minDateAllowed = clinicOpenState ? todayIndia : tomorrowIndia;
+
     async function onSubmit(values: AppointmentFormValues) {
         setSubmitError(null);
+
+        if (!clinicOpenState && values.preferred_date <= todayIndia) {
+            form.setError("preferred_date", {
+                type: "manual",
+                message: "The clinic is closed today. Please select tomorrow or a later date.",
+            });
+            return;
+        }
 
         try {
             const response = await fetch(
@@ -300,8 +376,6 @@ export function AppointmentDialog({
         }
     }
 
-    const today = new Date().toISOString().split("T")[0];
-
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
@@ -343,6 +417,20 @@ export function AppointmentDialog({
                                 will contact you to confirm the booking.
                             </DialogDescription>
                         </DialogHeader>
+
+                        {!clinicOpenState && (
+                            <div className="mt-3 flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50/90 p-3.5 text-rose-900">
+                                <AlertCircle className="mt-0.5 size-5 shrink-0 text-rose-600" />
+                                <div className="space-y-0.5 text-xs">
+                                    <p className="font-semibold text-rose-800">
+                                        Clinic is Closed Today ({todayIndia})
+                                    </p>
+                                    <p className="text-rose-700">
+                                        Same-day bookings are currently unavailable. You can schedule appointments for tomorrow ({tomorrowIndia}) onwards.
+                                    </p>
+                                </div>
+                            </div>
+                        )}
 
                         <Form {...form}>
                             <form
@@ -493,12 +581,29 @@ export function AppointmentDialog({
 
                                                         <Input
                                                             type="date"
-                                                            min={today}
+                                                            min={minDateAllowed}
                                                             className="pl-10"
                                                             {...field}
+                                                            onChange={(e) => {
+                                                                field.onChange(e);
+                                                                if (!clinicOpenState && e.target.value <= todayIndia) {
+                                                                    form.setError("preferred_date", {
+                                                                        type: "manual",
+                                                                        message: "The clinic is closed today. Please select tomorrow or a future date.",
+                                                                    });
+                                                                } else {
+                                                                    form.clearErrors("preferred_date");
+                                                                }
+                                                            }}
                                                         />
                                                     </div>
                                                 </FormControl>
+
+                                                {!clinicOpenState && (
+                                                    <p className="text-[0.75rem] font-medium text-rose-600 mt-1">
+                                                        Clinic closed today. Earliest available date is tomorrow ({tomorrowIndia}).
+                                                    </p>
+                                                )}
 
                                                 <FormMessage />
                                             </FormItem>

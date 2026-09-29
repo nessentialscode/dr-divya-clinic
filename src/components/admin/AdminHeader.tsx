@@ -18,31 +18,34 @@ export function AdminHeader({
   return (
     <header className="w-full bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 shadow-[0_4px_20px_-4px_rgba(15,23,42,0.04)] p-2.5 sm:p-4 px-3 sm:px-6">
       <div className="flex items-center justify-between gap-1.5 sm:gap-3 min-w-0">
-        {/* Left: Brand & Admin System Badge */}
-        <div className="flex items-center gap-2 sm:gap-3.5 min-w-0 flex-1">
-          <div className="flex items-center justify-center size-8 sm:size-11 rounded-lg sm:rounded-xl bg-gradient-to-br from-blue-500 to-sky-600 shadow-sm shrink-0 p-1.5 sm:p-2">
-            <img
-              src={clinicLogoMark}
-              alt="Dr. Divya's Clinic"
-              className="w-full h-full object-contain brightness-0 invert"
-            />
-          </div>
+        {/* Left: Brand & Admin System Badge — matching public site branding */}
+        <Link
+          to="/"
+          className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-1 hover:opacity-90 transition-opacity"
+          aria-label="Dr. Divya's Family Dental Clinic"
+        >
+          <img
+            src={clinicLogoMark}
+            alt="Dr. Divya's Family Dental Clinic"
+            width={105}
+            height={103}
+            className="h-9 sm:h-12 w-auto object-contain drop-shadow-sm shrink-0"
+          />
 
-          <div className="flex flex-col min-w-0 flex-1">
+          <div className="flex flex-col justify-center leading-none min-w-0">
             <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
-              <span className="text-xs sm:text-base font-bold text-slate-900 tracking-tight leading-snug truncate">
-                <span className="hidden sm:inline">Dr. Divya&apos;s Family Dental Clinic</span>
-                <span className="sm:hidden inline">Dr. Divya&apos;s Clinic</span>
+              <span className="text-sm sm:text-lg font-extrabold uppercase tracking-[0.06em] text-slate-900 truncate">
+                Dr. Divya&apos;s
               </span>
-              <span className="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold tracking-wider uppercase bg-sky-50 text-sky-700 border border-sky-200/80 shrink-0">
+              <span className="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold tracking-wider uppercase bg-amber-50 text-amber-800 border border-amber-200/80 shrink-0">
                 Staff Admin
               </span>
             </div>
-            <span className="hidden sm:inline text-xs text-slate-500 font-medium">
-              Appointment Management System
+            <span className="mt-1 text-[10px] sm:text-xs font-bold uppercase tracking-[0.18em] text-[#dbb335] truncate">
+              Family Dental Clinic
             </span>
           </div>
-        </div>
+        </Link>
 
         {/* Right: Actions (single-row matching mobile reference) */}
         <div className="flex items-center gap-1 sm:gap-2 shrink-0">

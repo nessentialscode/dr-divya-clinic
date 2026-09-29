@@ -60,23 +60,37 @@ export function AdminLoginPage({ onSuccess }: AdminLoginPageProps) {
       <main className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-[450px] bg-white rounded-[28px] sm:rounded-[32px] shadow-[0_20px_50px_-15px_rgba(15,23,42,0.08)] border border-slate-200/90 relative overflow-hidden p-6 sm:p-10">
           {/* Top Brand Accent Bar */}
-          <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-blue-500 via-teal-400 to-lime-400" />
+          <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-[#dbb335] via-amber-400 to-[#d4a017]" />
 
-          {/* Logo & Header */}
-          <div className="text-center mb-8 pt-2">
-            <div className="inline-flex items-center justify-center size-14 rounded-2xl bg-gradient-to-br from-blue-500 to-sky-600 shadow-md shadow-sky-500/20 mb-3.5 p-2.5">
+          {/* Logo & Header — matching public site branding */}
+          <div className="text-center mb-7 pt-2">
+            <Link
+              to="/"
+              className="inline-flex flex-col items-center justify-center hover:opacity-90 transition-opacity group"
+            >
               <img
                 src={clinicLogoMark}
                 alt="Dr. Divya's Family Dental Clinic"
-                className="w-full h-full object-contain brightness-0 invert"
+                width={105}
+                height={103}
+                className="h-16 sm:h-20 w-auto object-contain drop-shadow-md mb-3 transition-transform group-hover:scale-105"
               />
+              <div className="flex flex-col items-center leading-none">
+                <span className="text-2xl sm:text-3xl font-extrabold uppercase tracking-[0.08em] text-slate-900">
+                  Dr. Divya&apos;s
+                </span>
+                <span className="mt-2 text-xs sm:text-sm font-bold uppercase tracking-[0.22em] text-[#dbb335]">
+                  Family Dental Clinic
+                </span>
+              </div>
+            </Link>
+
+            <div className="mt-4 flex items-center justify-center">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold tracking-wider uppercase bg-amber-50 text-amber-800 border border-amber-200/80">
+                <span className="size-1.5 rounded-full bg-amber-500" />
+                Staff &amp; Admin Portal
+              </span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-              Dr. Divya's Family Dental Clinic
-            </h1>
-            <p className="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-sky-600">
-              Staff &amp; Admin Portal
-            </p>
           </div>
 
           {/* Error Message */}

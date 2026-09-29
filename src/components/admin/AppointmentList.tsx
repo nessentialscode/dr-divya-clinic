@@ -8,7 +8,9 @@ import {
   Stethoscope,
 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { WhatsAppIcon, buildWhatsAppConfirmationUrl } from "@/lib/whatsapp";
 import {
   AppointmentDetailDialog,
   type AppointmentRecord,
@@ -42,6 +44,12 @@ export function AppointmentList({
     id: string,
     newStatus: AppointmentRecord["status"],
   ) => {
+    const target = appointments.find((a) => a.id === id);
+    if (target?.status === "confirmed" && newStatus === "cancelled") {
+      toast.error("Confirmed appointments cannot be changed to Cancelled.");
+      return;
+    }
+
     try {
       setUpdatingId(id);
       await onStatusChange(id, newStatus);
@@ -184,7 +192,7 @@ export function AppointmentList({
                     className="flex items-center justify-between pt-1"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 flex-wrap">
                       <span className="text-[10px] text-slate-400 font-medium">Status:</span>
                       <select
                         value={appt.status}
@@ -202,8 +210,30 @@ export function AppointmentList({
                         <option value="contacted">Contacted</option>
                         <option value="confirmed">Confirmed</option>
                         <option value="completed">Completed</option>
-                        <option value="cancelled">Cancelled</option>
+                        {appt.status !== "confirmed" && (
+                          <option value="cancelled">Cancelled</option>
+                        )}
                       </select>
+
+                      {appt.status === "confirmed" && (
+                        <a
+                          href={buildWhatsAppConfirmationUrl({
+                            patientName: appt.patient_name,
+                            phone: appt.phone,
+                            clinicName: appt.clinic_name,
+                            doctorName: appt.doctor_name,
+                            preferredDate: appt.preferred_date,
+                            preferredTime: appt.preferred_time,
+                          })}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="Open WhatsApp confirmation"
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-bold bg-[#25D366] text-white hover:bg-[#20ba5a] shadow-xs"
+                        >
+                          <WhatsAppIcon className="size-3 fill-white" />
+                          <span>WhatsApp</span>
+                        </a>
+                      )}
                     </div>
 
                     <Button
@@ -304,23 +334,67 @@ export function AppointmentList({
                             <option value="contacted">Contacted</option>
                             <option value="confirmed">Confirmed</option>
                             <option value="completed">Completed</option>
-                            <option value="cancelled">Cancelled</option>
+                            {appt.status !== "confirmed" && (
+                              <option value="cancelled">Cancelled</option>
+                            )}
                           </select>
+
+                          {/* WhatsApp Badge/Button appearing when confirmed */}
+                          {appt.status === "confirmed" && (
+                            <a
+                              href={buildWhatsAppConfirmationUrl({
+                                patientName: appt.patient_name,
+                                phone: appt.phone,
+                                clinicName: appt.clinic_name,
+                                doctorName: appt.doctor_name,
+                                preferredDate: appt.preferred_date,
+                                preferredTime: appt.preferred_time,
+                              })}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              title={`Send confirmation to ${appt.patient_name} on WhatsApp`}
+                              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#25D366] hover:bg-[#20ba5a] text-white shadow-2xs transition-transform hover:scale-105 cursor-pointer shrink-0"
+                            >
+                              <WhatsAppIcon className="size-3 fill-white" />
+                              <span>WhatsApp</span>
+                            </a>
+                          )}
                         </div>
                       </td>
 
                       {/* Actions */}
                       <td className="py-3.5 px-4 text-right sm:pr-6 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleOpenDetail(appt)}
-                          className="size-7 p-0 text-slate-400 hover:text-slate-700 hover:bg-slate-200/50 rounded-lg cursor-pointer"
-                          title="View Full Details"
-                        >
-                          <Eye size={14} />
-                        </Button>
+                        <div className="inline-flex items-center gap-1.5 justify-end">
+                          {appt.status === "confirmed" && (
+                            <a
+                              href={buildWhatsAppConfirmationUrl({
+                                patientName: appt.patient_name,
+                                phone: appt.phone,
+                                clinicName: appt.clinic_name,
+                                doctorName: appt.doctor_name,
+                                preferredDate: appt.preferred_date,
+                                preferredTime: appt.preferred_time,
+                              })}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              title={`Send WhatsApp confirmation to ${appt.patient_name}`}
+                              className="size-7 inline-flex items-center justify-center text-white bg-[#25D366] hover:bg-[#20ba5a] rounded-lg shadow-2xs transition-transform hover:scale-105 cursor-pointer"
+                            >
+                              <WhatsAppIcon className="size-3.5 fill-white" />
+                            </a>
+                          )}
+
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleOpenDetail(appt)}
+                            className="size-7 p-0 text-slate-400 hover:text-slate-700 hover:bg-slate-200/50 rounded-lg cursor-pointer"
+                            title="View Full Details"
+                          >
+                            <Eye size={14} />
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   );

@@ -303,6 +303,32 @@ export default {
           );
         }
 
+        const indiaToday = new Intl.DateTimeFormat("en-CA", {
+          timeZone: "Asia/Kolkata",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }).format(new Date());
+
+        if (preferred_date === indiaToday) {
+          const { data: activeClinics, error: clinicsError } = await ctx.supabase
+            .from("clinics")
+            .select("id")
+            .eq("active", true)
+            .limit(1);
+
+          if (!clinicsError && (!activeClinics || activeClinics.length === 0)) {
+            return jsonResponse(
+              {
+                success: false,
+                error:
+                  "The clinic is currently closed today. Online booking is open for tomorrow onwards.",
+              },
+              400,
+            );
+          }
+        }
+
         /*
          * Appointment time validation
          */
