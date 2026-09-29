@@ -127,7 +127,7 @@ export function FeedbackModeration({
                       </span>
                     )}
                     <div className="flex items-center gap-0.5 text-amber-400">
-                      {Array.from({ length: item.rating }).map((_, i) => (
+                      {Array.from({ length: Math.max(0, Math.min(5, Math.floor(Number(item.rating) || 0))) }).map((_, i) => (
                         <Star key={i} size={12} fill="currentColor" />
                       ))}
                     </div>

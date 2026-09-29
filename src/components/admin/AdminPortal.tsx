@@ -304,8 +304,8 @@ export function AdminPortal({ userEmail, onSignOut }: AdminPortalProps) {
         // Search filter (patient name or phone)
         if (filters.search) {
           const q = filters.search.toLowerCase().trim();
-          const matchName = a.patient_name.toLowerCase().includes(q);
-          const matchPhone = a.phone.includes(q);
+          const matchName = (a.patient_name || "").toLowerCase().includes(q);
+          const matchPhone = (a.phone || "").includes(q);
           if (!matchName && !matchPhone) return false;
         }
 
