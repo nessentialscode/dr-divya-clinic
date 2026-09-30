@@ -220,8 +220,10 @@ export function AppointmentDialog({
                     "Unable to load specialists right now. Please try again.",
                 );
                 setSpecialists([]);
-            } else {
-                const loaded = data ?? [];
+                const loaded = (data ?? []).map((s) => ({
+                    ...s,
+                    name: s.name.toLowerCase().includes("divya") ? "Dr. Divya Lijeesh" : s.name,
+                }));
                 setSpecialists(loaded);
                 if (specialistId) {
                     const match = loaded.find(

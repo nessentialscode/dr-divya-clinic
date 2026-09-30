@@ -27,9 +27,9 @@ export function AdminHeader({
           <img
             src={clinicLogoMark}
             alt="Dr. Divya's Family Dental Clinic"
-            width={105}
-            height={103}
-            className="h-9 sm:h-12 w-auto object-contain drop-shadow-sm shrink-0"
+            width={44}
+            height={44}
+            className="size-9 sm:size-11 object-contain drop-shadow-sm shrink-0 rounded-full"
           />
 
           <div className="flex flex-col justify-center leading-none min-w-0">

@@ -7,6 +7,7 @@ import specialist1 from "@/assets/specialist-1.jpg";
 import specialist2 from "@/assets/specialist-2.jpg";
 import specialist3 from "@/assets/specialist-3.jpg";
 import specialist4 from "@/assets/specialist-4.jpg";
+import specialistDrDivya from "@/assets/specialist-dr-divya.jpg";
 import specialistDrRathish from "@/assets/specialist-dr-rathish.jpg";
 import specialistDrLijeesh from "@/assets/specialist-dr-lijeesh.jpg";
 import specialistDrAslif from "@/assets/specialist-dr-aslif.jpg";
@@ -16,9 +17,9 @@ import { supabase } from "@/lib/supabase";
 import { AppointmentDialog } from "./AppointmentDialog";
 
 const orderedDoctorOrder = [
-  "Dr. Divya Nath",
-  "Dr. Rathish T.K",
+  "Dr. Divya Lijeesh",
   "Dr. Lijeesh Kadambil",
+  "Dr. Rathish T.K",
   "Dr. Anas",
   "Dr. Roshan",
   "Dr. Ratheesh M.S",
@@ -42,14 +43,15 @@ type ClinicBranch = {
 };
 
 const doctorPhotos: Record<string, string> = {
-  "Dr. Divya Nath": specialist3,
-  "Dr. Rathish T.K": specialistDrRathish,       // Card 2: Image 1
-  "Dr. Lijeesh Kadambil": specialistDrLijeesh,   // Card 3: Image 2
+  "Dr. Divya Lijeesh": specialistDrDivya,      // Card 1: Dr. Divya Lijeesh
+  "Dr. Divya Nath": specialistDrDivya,
+  "Dr. Rathish T.K": specialistDrRathish,       // Card 2
+  "Dr. Lijeesh Kadambil": specialistDrLijeesh,   // Card 3: Dr. Lijeesh Kadambil
   "Dr. Anas": specialist1,
   "Dr. Roshan": specialist4,
   "Dr. Ratheesh M.S": specialist2,
-  "Dr. Mohamed Aslif": specialistDrAslif,       // Card 7: Image 4
-  "Dr. Mohamed Haris P.M": specialistDrHaris,   // Card 8: Image 5
+  "Dr. Mohamed Aslif": specialistDrAslif,       // Card 7
+  "Dr. Mohamed Haris P.M": specialistDrHaris,   // Card 8
 };
 
 const fallbackPhotos: readonly string[] = [
@@ -127,21 +129,29 @@ export function Specialists() {
 
         // Sort according to the requested 8-doctor order
         const sorted = [...data].sort((a, b) => {
-          const indexA = orderedDoctorOrder.findIndex((name) =>
-            a.name.toLowerCase().includes(name.toLowerCase())
-          );
-          const indexB = orderedDoctorOrder.findIndex((name) =>
-            b.name.toLowerCase().includes(name.toLowerCase())
-          );
+          const indexA = orderedDoctorOrder.findIndex((name) => {
+            const cleanA = a.name.toLowerCase().replace(/[\.\s]/g, "");
+            const cleanTarget = name.toLowerCase().replace(/[\.\s]/g, "");
+            return cleanA.includes(cleanTarget) || cleanTarget.includes(cleanA) || (cleanA.includes("divya") && cleanTarget.includes("divya"));
+          });
+          const indexB = orderedDoctorOrder.findIndex((name) => {
+            const cleanB = b.name.toLowerCase().replace(/[\.\s]/g, "");
+            const cleanTarget = name.toLowerCase().replace(/[\.\s]/g, "");
+            return cleanB.includes(cleanTarget) || cleanTarget.includes(cleanB) || (cleanB.includes("divya") && cleanTarget.includes("divya"));
+          });
           const orderA = indexA === -1 ? 999 : indexA;
           const orderB = indexB === -1 ? 999 : indexB;
           return orderA - orderB;
         });
 
         const merged: ClinicDoctor[] = sorted.map((item, index) => {
+          const displayName = item.name.toLowerCase().includes("divya")
+            ? "Dr. Divya Lijeesh"
+            : item.name;
+
           const photoKey = Object.keys(doctorPhotos).find((k) => {
             const cleanK = k.toLowerCase().replace(/[\.\s]/g, "");
-            const cleanName = item.name.toLowerCase().replace(/[\.\s]/g, "");
+            const cleanName = displayName.toLowerCase().replace(/[\.\s]/g, "");
             return cleanName.includes(cleanK) || cleanK.includes(cleanName);
           });
           const matchedPhoto = photoKey ? doctorPhotos[photoKey] : undefined;
@@ -150,7 +160,7 @@ export function Specialists() {
 
           return {
             id: item.id,
-            name: item.name,
+            name: displayName,
             specialty: item.specialty,
             image: matchedPhoto ?? fallbackPhoto,
             is_available: item.is_available ?? true,
@@ -395,11 +405,7 @@ export function Specialists() {
                 <article
                   key={doctor.id}
                   onClick={() => handleDoctorConsultation(doctor.id, isPresent, doctor.name)}
-                  className={`group relative cursor-pointer min-w-[78vw] snap-center rounded-2xl p-2.5 transition-all duration-300 hover:bg-background hover:shadow-xl sm:min-w-[280px] lg:min-w-0 border ${
-                    isPresent
-                      ? "border-[#b8f0d4] bg-[#ebfbf3]/25 hover:border-[#008953]/50"
-                      : "border-rose-200/90 bg-rose-50/20 hover:border-rose-300"
-                  }`}
+                  className="group relative cursor-pointer min-w-[78vw] snap-center rounded-2xl p-2.5 transition-all duration-300 hover:shadow-xl sm:min-w-[280px] lg:min-w-0 border border-border/70 bg-muted/60 hover:border-border"
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
@@ -416,9 +422,7 @@ export function Specialists() {
                       width={853}
                       height={1024}
                       loading="lazy"
-                      className={`h-full w-full object-cover object-top transition duration-500 group-hover:scale-105 ${
-                        isPresent ? "" : "opacity-95 saturate-[0.88]"
-                      }`}
+                      className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-105"
                     />
 
                     {/* Presence / Absence Status Badge */}
@@ -438,13 +442,7 @@ export function Specialists() {
 
                     {/* Bottom Hover Action Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex items-end p-3">
-                      <span
-                        className={`text-[11px] font-semibold text-white px-2.5 py-1 rounded-full backdrop-blur-sm ${
-                          isPresent
-                            ? "bg-black/50"
-                            : "bg-rose-950/85 border border-rose-500/40 text-rose-100"
-                        }`}
-                      >
+                      <span className="text-[11px] font-semibold text-white px-2.5 py-1 rounded-full backdrop-blur-sm bg-black/50">
                         {isPresent ? "Book Consultation" : "Doctor Absent Today"}
                       </span>
                     </div>
@@ -472,11 +470,7 @@ export function Specialists() {
                           ? `Book consultation with ${doctor.name}`
                           : `${doctor.name} is currently absent`
                       }
-                      className={`grid size-9 shrink-0 place-items-center rounded-full border transition-all duration-200 group-hover:scale-105 shadow-2xs ${
-                        isPresent
-                          ? "border-[#b8f0d4] bg-[#ebfbf3]/80 text-[#008953] group-hover:bg-[#008953] group-hover:text-white"
-                          : "border-rose-200 bg-rose-50/80 text-rose-700 group-hover:bg-rose-600 group-hover:text-white"
-                      }`}
+                      className="grid size-9 shrink-0 place-items-center rounded-full border border-border bg-background p-0 text-foreground transition-all duration-200 group-hover:bg-foreground group-hover:text-background group-hover:scale-105 shadow-2xs"
                     >
                       <ArrowUpRight size={15} />
                     </button>

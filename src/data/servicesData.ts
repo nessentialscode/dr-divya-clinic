@@ -143,7 +143,7 @@ export const servicesData: ServiceDetail[] = [
     recommendedSpecialists: [
       {
         id: "631e3a56-84f3-4658-a269-d1e4566fa8e7",
-        name: "Dr. Divya Nath",
+        name: "Dr. Divya Lijeesh",
         role: "Resident Dental Surgeon",
       },
       {
@@ -259,7 +259,7 @@ export const servicesData: ServiceDetail[] = [
     recommendedSpecialists: [
       {
         id: "631e3a56-84f3-4658-a269-d1e4566fa8e7",
-        name: "Dr. Divya Nath",
+        name: "Dr. Divya Lijeesh",
         role: "Resident Dental Surgeon",
       },
       {
@@ -718,7 +718,7 @@ export const servicesData: ServiceDetail[] = [
     recommendedSpecialists: [
       {
         id: "631e3a56-84f3-4658-a269-d1e4566fa8e7",
-        name: "Dr. Divya Nath",
+        name: "Dr. Divya Lijeesh",
         role: "Resident Dental Surgeon",
       },
       {

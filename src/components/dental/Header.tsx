@@ -23,10 +23,10 @@ export function Brand({ inverse = false }: { inverse?: boolean }) {
     >
       <img
         src={clinicLogoMark}
-        alt="Dr. Divya's Logo"
-        width={105}
-        height={103}
-        className="h-12 w-auto object-contain drop-shadow-sm sm:h-[60px]"
+        alt="Dr. Divya's Family Dental Clinic Logo"
+        width={58}
+        height={58}
+        className="h-11 w-11 sm:h-[54px] sm:w-[54px] object-contain shrink-0 drop-shadow-sm rounded-full"
       />
 
       <div className="flex flex-col justify-center leading-none">

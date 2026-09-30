@@ -71,9 +71,9 @@ export function AdminLoginPage({ onSuccess }: AdminLoginPageProps) {
               <img
                 src={clinicLogoMark}
                 alt="Dr. Divya's Family Dental Clinic"
-                width={105}
-                height={103}
-                className="h-16 sm:h-20 w-auto object-contain drop-shadow-md mb-3 transition-transform group-hover:scale-105"
+                width={88}
+                height={88}
+                className="size-20 sm:size-24 object-contain drop-shadow-md mb-3 transition-transform group-hover:scale-105 rounded-full"
               />
               <div className="flex flex-col items-center leading-none">
                 <span className="text-2xl sm:text-3xl font-extrabold uppercase tracking-[0.08em] text-slate-900">
