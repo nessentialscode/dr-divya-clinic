@@ -75,7 +75,7 @@ export const servicesData: ServiceDetail[] = [
     dbServiceName: "Dental Implants",
     title: "Dental Implants",
     shortCopy:
-      "Permanent, biocompatible titanium implants designed to replace missing teeth with natural strength, aesthetics, and lasting bone health.",
+      "Our computer-guided implantology ensures sub-millimeter precision, minimal discomfort, and rapid healing for seamless single, multiple, or full-arch restorations.",
     tag: "Implants & Surgery",
     icon: Layers,
     image: serviceImplants,
@@ -191,7 +191,7 @@ export const servicesData: ServiceDetail[] = [
     dbServiceName: "Root Canal Treatment",
     title: "Root Canal Treatment",
     shortCopy:
-      "Advanced painless single-sitting rotary endodontics to eradicate infection, relieve nerve pain, and save your natural tooth.",
+      "Utilizing rotary endodontic instruments and apex locators to eliminate infection painlessly, preserving your natural tooth structure.",
     tag: "Endodontics",
     icon: HeartPulse,
     image: serviceRestorative,
@@ -307,7 +307,7 @@ export const servicesData: ServiceDetail[] = [
     dbServiceName: "Braces & Aligners",
     title: "Braces & Aligners",
     shortCopy:
-      "Custom clear aligners and discreet ceramic braces engineered to correct misalignments, spacing, and bite irregularities comfortably.",
+      "Custom 3D scanned treatment paths provide predictable tooth movement with nearly invisible aligners or precision ceramic brackets.",
     tag: "Orthodontics",
     icon: Smile,
     image: serviceOrtho,

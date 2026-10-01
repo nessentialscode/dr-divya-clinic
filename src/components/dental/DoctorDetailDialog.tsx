@@ -69,11 +69,19 @@ export function DoctorDetailDialog({
         <div className="relative bg-gradient-to-r from-primary/10 via-accent/30 to-secondary p-5 sm:p-7 border-b border-border/60">
           <div className="flex flex-col sm:flex-row gap-5 items-center sm:items-start text-center sm:text-left">
             {/* Photo Avatar */}
-            <div className="relative shrink-0 size-28 sm:size-32 rounded-2xl overflow-hidden border-2 border-background shadow-md bg-muted">
+            <div
+              className={`relative shrink-0 size-28 sm:size-32 rounded-2xl overflow-hidden border-2 border-background shadow-md ${
+                doctor.image.includes("specialist-prof-mufeed") ? "bg-[#5fa0e6]" : "bg-muted"
+              }`}
+            >
               <img
                 src={doctor.image}
                 alt={displayName}
-                className="w-full h-full object-cover object-top"
+                className={`w-full h-full ${
+                  doctor.image.includes("specialist-prof-mufeed")
+                    ? "object-contain"
+                    : "object-cover object-top"
+                }`}
               />
               {/* Status badge on photo */}
               <div className="absolute top-2 left-2 pointer-events-none">

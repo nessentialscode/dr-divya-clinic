@@ -48,14 +48,29 @@ export function AboutSection() {
   );
 }
 
+const serviceCategoryBadge: Record<string, string> = {
+  "dental-implants": "RESTORATIVE SURGERY",
+  "root-canal-treatment": "ENDODONTICS",
+  "braces-aligners": "ORTHODONTICS",
+  "teeth-whitening": "COSMETIC DENTISTRY",
+  "veneers-crowns": "AESTHETIC RESTORATION",
+  "preventive-care": "GENERAL DENTISTRY",
+  "periodontal-surgery": "PERIODONTICS",
+  "maxillofacial-surgery": "ORAL SURGERY",
+  "dentures": "PROSTHODONTICS",
+  "tmj-splints": "TMJ THERAPY",
+  "pediatric-dentistry": "PEDIATRIC CARE",
+  "mucosal-pathology": "ORAL PATHOLOGY",
+};
+
 export function ServicesSection() {
   const [showAll, setShowAll] = useState(false);
 
-  // 6 Services shown initially in the main screen, remaining 6 revealed on "See All"
+  // 6 Services shown initially in the main screen (2 rows of 3), remaining 6 revealed on "See All"
   const visibleServices = showAll ? servicesData : servicesData.slice(0, 6);
 
   return (
-    <section id="services" className="bg-[#fefde8] py-20 sm:py-28 lg:py-32">
+    <section id="services" className="bg-[#edf5f0] py-20 sm:py-28 lg:py-32">
       <div className="site-container">
         <div className="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div>
@@ -79,56 +94,77 @@ export function ServicesSection() {
           </div>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {visibleServices.map(
-            ({ title, shortCopy, icon: Icon, image, tag, slug, dbServiceId }) => (
-              <article
-                key={slug}
-                className="group relative flex flex-col overflow-hidden rounded-xl border border-primary/20 bg-secondary transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:flex-row"
-              >
-                <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-muted sm:aspect-auto sm:w-48 md:w-56">
+            ({ title, shortCopy, image, tag, slug, dbServiceId }) => {
+              const category = serviceCategoryBadge[slug] || tag.toUpperCase();
+
+              return (
+                <article
+                  key={slug}
+                  className="group relative flex min-h-[460px] sm:min-h-[490px] flex-col justify-between overflow-hidden rounded-[28px] sm:rounded-[32px] border border-black/10 shadow-lg transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl"
+                >
+                  {/* Procedure Photo Background */}
                   <img
                     src={image}
                     alt={title}
                     loading="lazy"
-                    className="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-105"
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                   />
-                  <span className="absolute left-3 top-3 rounded-full border border-background/40 bg-background/90 px-2.5 py-0.5 text-[11px] font-semibold text-foreground backdrop-blur-md">
-                    {tag}
-                  </span>
-                </div>
-                <div className="flex flex-1 flex-col justify-between p-6">
-                  <div>
-                    <div className="flex items-center gap-3">
-                      <div className="grid size-9 place-items-center rounded-lg border border-primary/30 bg-background/80 text-foreground">
-                        <Icon size={18} strokeWidth={1.6} aria-hidden="true" />
-                      </div>
-                      <h3 className="text-base font-semibold leading-snug">{title}</h3>
-                    </div>
-                    <p className="mt-3 text-sm leading-6 text-muted-foreground">{shortCopy}</p>
-                  </div>
-                  <div className="mt-5 flex items-center justify-between">
-                    <Link
-                      to="/services/$slug"
-                      params={{ slug }}
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground transition-colors group-hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
-                    >
-                      <span>View Details</span>
-                      <span className="transition duration-200 group-hover:translate-x-1">→</span>
-                    </Link>
 
-                    <AppointmentTrigger
-                      serviceId={dbServiceId}
-                      variant="ghost"
-                      size="sm"
-                      className="h-8 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-background/80"
-                    >
-                      Book Now <ArrowUpRight size={12} className="ml-1" />
-                    </AppointmentTrigger>
+                  {/* Dark gradient overlay for high contrast and legibility */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/35 pointer-events-none" />
+
+                  {/* Top Badges */}
+                  <div className="relative z-10 flex items-center justify-between gap-2 p-5 sm:p-6">
+                    <div className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-black/45 px-3 py-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#d4f933] backdrop-blur-md">
+                      <span className="text-[#d4f933] text-xs">✦</span>
+                      <span>PROCEDURE PHOTO</span>
+                    </div>
+
+                    <div className="rounded-full border border-white/20 bg-white/20 px-3 py-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-white backdrop-blur-md">
+                      {category}
+                    </div>
                   </div>
-                </div>
-              </article>
-            ),
+
+                  {/* Bottom Content Area */}
+                  <div className="relative z-10 p-5 sm:p-6 pt-0">
+                    <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-[#d4f933]">
+                      {category}
+                    </span>
+
+                    <h3 className="mt-1 text-2xl font-bold tracking-tight text-white leading-snug sm:text-[26px]">
+                      <Link
+                        to="/services/$slug"
+                        params={{ slug }}
+                        className="transition-colors hover:text-[#d4f933]"
+                      >
+                        {title}
+                      </Link>
+                    </h3>
+
+                    <p className="mt-2 text-xs sm:text-[13px] leading-relaxed text-white/80 line-clamp-3">
+                      {shortCopy}
+                    </p>
+
+                    <div className="mt-5 flex items-center justify-between gap-3 border-t border-white/15 pt-4">
+                      <div className="flex items-center gap-2 text-xs font-medium text-white/90">
+                        <span className="size-1.5 rounded-full bg-[#d4f933]" />
+                        <span>State-of-the-art care</span>
+                      </div>
+
+                      <AppointmentTrigger
+                        serviceId={dbServiceId}
+                        className="inline-flex items-center gap-1.5 rounded-full bg-[#d4f933] px-4 py-2 text-xs font-bold text-black transition-all hover:bg-[#c2e728] hover:scale-105 shadow-md"
+                      >
+                        <span>Book Treatment</span>
+                        <ArrowUpRight size={13} className="stroke-[2.5]" />
+                      </AppointmentTrigger>
+                    </div>
+                  </div>
+                </article>
+              );
+            },
           )}
         </div>
 

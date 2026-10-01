@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
   Building2,
   CalendarX2,
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
   DoorClosed,
   MapPin,
   Quote,
@@ -21,6 +23,7 @@ import specialistDrLijeesh from "@/assets/specialist-dr-lijeesh.jpg";
 import specialistDrAslif from "@/assets/specialist-dr-aslif.jpg";
 import specialistDrHaris from "@/assets/specialist-dr-haris.jpg";
 import specialistDrNidhash from "@/assets/specialist-dr-nidhash.jpg";
+import specialistDrFathima from "@/assets/specialist-dr-fathima.jpg";
 
 import { supabase } from "@/lib/supabase";
 import { normalizeDoctorDisplayName } from "@/lib/utils";
@@ -32,6 +35,7 @@ const orderedDoctorOrder = [
   "Dr. Lijeesh Kadambil",
   "Dr. Rathish T.K",
   "Dr. Nidhash Saddik",
+  "Dr. Fathima Roosa Fidha TP",
   "Dr. Roshan",
   "Dr. Ratheesh M.S",
   "Dr. Mohamed Aslif",
@@ -158,6 +162,19 @@ const doctorDetailsData: Record<string, DoctorDetailInfo> = {
       "Preserving Long-Term Oral Health",
     ],
   },
+  fathima: {
+    name: "Dr. Fathima Roosa Fidha TP",
+    designation: "Resident Dental Surgeon",
+    credentials: "BDS • Resident Dental Surgeon",
+    experience: "Clinical Dental Surgeon",
+    bio: "Dr. Fathima Roosa Fidha TP is a dedicated and compassionate dental surgeon committed to providing comprehensive, patient-centred dental care. With expertise spanning preventive dentistry, restorative procedures, aesthetic smile enhancements, and gentle routine treatments, she ensures a comfortable and reassuring dental experience for all patients.",
+    highlights: [
+      "Preventive & Conservative Dentistry",
+      "Aesthetic Dental Restorations",
+      "Gentle & Reassuring Patient Consultations",
+      "Comprehensive Oral Health Maintenance",
+    ],
+  },
 };
 
 function cleanDoctorKey(name: string): string {
@@ -174,6 +191,8 @@ function getDoctorDetail(doctorName: string): DoctorDetailInfo | null {
     return doctorDetailsData["rathish"] ?? null;
   if (clean.includes("nidhash") || clean.includes("anas"))
     return doctorDetailsData["nidhash"] ?? null;
+  if (clean.includes("fathima") || clean.includes("roosa") || clean.includes("fidha"))
+    return doctorDetailsData["fathima"] ?? null;
   if (clean.includes("roshan")) return doctorDetailsData["roshan"] ?? null;
   if (clean.includes("aslif")) return doctorDetailsData["aslif"] ?? null;
   if (clean.includes("haris")) return doctorDetailsData["haris"] ?? null;
@@ -183,10 +202,14 @@ function getDoctorDetail(doctorName: string): DoctorDetailInfo | null {
 const doctorPhotos: Record<string, string> = {
   "Dr. Divya Lijeesh": specialistDrDivya, // Card 1: Dr. Divya Lijeesh
   "Dr. Divya Nath": specialistDrDivya,
-  "Dr. Lijeesh Kadambil": specialistDrLijeesh, // Card 2: Dr. Lijeesh Kadambil
+  "Dr. Lijeesh Kadambil": specialistDrLijeesh, // Card 2: Dr. Lijeesh Kadambil and his photo
+  "Dr. Lijeesh": specialistDrLijeesh,
   "Dr. Rathish T.K": specialistDrRathish, // Card 3: Dr. Rathish T.K
-  "Dr. Nidhash Saddik": specialistDrNidhash, // Card 4: Dr. Nidhash Saddik (grey background)
+  "Dr. Nidhash Saddik": specialistDrNidhash, // Card 4: Dr. Nidhash Saddik
   "Dr. Anas": specialistDrNidhash,
+  "Dr. Fathima Roosa Fidha TP": specialistDrFathima,
+  "Dr. Fathima Roosa Fidha": specialistDrFathima,
+  "Dr. Fathima": specialistDrFathima,
   "Dr. Roshan": specialist4,
   "Dr. Ratheesh M.S": specialist2,
   "Dr. Mohamed Aslif": specialistDrAslif, // Card 7: Dr. Mohamed Aslif
@@ -263,13 +286,26 @@ export function Specialists() {
 
         if (cancelled) return;
 
-        if (error || !data || data.length === 0) {
-          setLoading(false);
-          return;
+        const rawList = [...(data || [])].filter(
+          (d) => !cleanDoctorKey(d.name).includes("mufeed"),
+        );
+        const hasFathima = rawList.some(
+          (d) =>
+            cleanDoctorKey(d.name).includes("fathima") ||
+            cleanDoctorKey(d.name).includes("roosa") ||
+            cleanDoctorKey(d.name).includes("fidha"),
+        );
+        if (!hasFathima) {
+          rawList.push({
+            id: "a3b89012-789a-4bc3-9de1-23456789abcd",
+            name: "Dr. Fathima Roosa Fidha TP",
+            specialty: "Resident Dental Surgeon",
+            is_available: true,
+          });
         }
 
-        // Sort according to the requested 8-doctor order
-        const sorted = [...data].sort((a, b) => {
+        // Sort according to orderedDoctorOrder
+        const sorted = rawList.sort((a, b) => {
           const cleanA = cleanDoctorKey(a.name);
           const cleanB = cleanDoctorKey(b.name);
           const indexA = orderedDoctorOrder.findIndex((name) => {
@@ -278,8 +314,11 @@ export function Specialists() {
               cleanA.includes(cleanTarget) ||
               cleanTarget.includes(cleanA) ||
               (cleanA.includes("divya") && cleanTarget.includes("divya")) ||
+              (cleanA.includes("lijeesh") && cleanTarget.includes("lijeesh")) ||
               ((cleanA.includes("anas") || cleanA.includes("nidhash")) &&
-                cleanTarget.includes("nidhash"))
+                cleanTarget.includes("nidhash")) ||
+              ((cleanA.includes("fathima") || cleanA.includes("roosa") || cleanA.includes("fidha")) &&
+                cleanTarget.includes("fathima"))
             );
           });
           const indexB = orderedDoctorOrder.findIndex((name) => {
@@ -288,8 +327,11 @@ export function Specialists() {
               cleanB.includes(cleanTarget) ||
               cleanTarget.includes(cleanB) ||
               (cleanB.includes("divya") && cleanTarget.includes("divya")) ||
+              (cleanB.includes("lijeesh") && cleanTarget.includes("lijeesh")) ||
               ((cleanB.includes("anas") || cleanB.includes("nidhash")) &&
-                cleanTarget.includes("nidhash"))
+                cleanTarget.includes("nidhash")) ||
+              ((cleanB.includes("fathima") || cleanB.includes("roosa") || cleanB.includes("fidha")) &&
+                cleanTarget.includes("fathima"))
             );
           });
           const orderA = indexA === -1 ? 999 : indexA;
@@ -308,10 +350,15 @@ export function Specialists() {
           const matchedPhoto = photoKey ? doctorPhotos[photoKey] : undefined;
           const fallbackPhoto = fallbackPhotos[index % fallbackPhotos.length] ?? defaultDoctorPhoto;
 
+          const specialty =
+            cleanName.includes("lijeesh")
+              ? "Chief Dental Surgeon"
+              : item.specialty;
+
           return {
             id: item.id,
             name: displayName,
-            specialty: item.specialty,
+            specialty,
             image: matchedPhoto ?? fallbackPhoto,
             is_available: item.is_available ?? true,
           };
@@ -379,8 +426,50 @@ export function Specialists() {
   }, []);
 
   const isClinicOpen = clinics.length > 0 && clinics.some((c) => c.active === true);
-  const primaryClinicName = clinics[0]?.name || "Dr. Divya's Family Dental Clinic";
+  const primaryClinicName = clinics[0]?.name || "Dr. Divya's Ayankalam Dental Clinic";
   const primaryClinicLocation = clinics[0]?.location || "Ayankalam, Malappuram, Kerala";
+
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const checkScroll = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      setCanScrollLeft(scrollLeft > 10);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
+
+  useEffect(() => {
+    checkScroll();
+    const el = scrollContainerRef.current;
+    if (!el) return;
+
+    el.addEventListener("scroll", checkScroll, { passive: true });
+    window.addEventListener("resize", checkScroll);
+    return () => {
+      el.removeEventListener("scroll", checkScroll);
+      window.removeEventListener("resize", checkScroll);
+    };
+  }, [doctorsList]);
+
+  const handleScroll = (direction: "left" | "right") => {
+    if (scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const cardDistance =
+        container.clientWidth >= 1024
+          ? (container.clientWidth - 48) / 3 + 24
+          : container.clientWidth >= 640
+          ? (container.clientWidth - 24) / 2 + 24
+          : container.clientWidth * 0.85 + 24;
+
+      container.scrollBy({
+        left: direction === "right" ? cardDistance : -cardDistance,
+        behavior: "smooth",
+      });
+    }
+  };
 
   const todayFormatted = new Intl.DateTimeFormat("en-IN", {
     timeZone: "Asia/Kolkata",
@@ -521,25 +610,51 @@ export function Specialists() {
           </div>
         </div>
 
-        <div className="mb-10 text-center">
-          <span className="eyebrow bg-background">Our Specialist</span>
+        <div className="mb-10 flex flex-col items-center justify-between gap-6 text-center sm:flex-row sm:text-left">
+          <div className="max-w-2xl">
+            <span className="eyebrow bg-background">Our Specialist</span>
 
-          <h2 className="section-title mx-auto mt-4 text-center">
-            Meet Our <em>Specialists</em>
-          </h2>
+            <h2 className="section-title mt-4">
+              Meet Our <em>Specialists</em>
+            </h2>
 
-          <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-muted-foreground sm:text-base">
-            A dedicated team of certified professionals with one goal — your healthiest, happiest
-            smile. Click any doctor to book a consultation.
-          </p>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground sm:text-base">
+              A dedicated team of certified professionals with one goal — your healthiest, happiest
+              smile. Click any doctor to book a consultation.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2.5 self-center sm:self-end">
+            <button
+              type="button"
+              onClick={() => handleScroll("left")}
+              disabled={!canScrollLeft}
+              aria-label="Previous specialists"
+              className="grid size-11 place-items-center rounded-full border border-border bg-background text-foreground transition-all duration-200 hover:bg-[#008953] hover:text-white hover:border-[#008953] disabled:opacity-30 disabled:pointer-events-none shadow-xs cursor-pointer"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <button
+              type="button"
+              onClick={() => handleScroll("right")}
+              disabled={!canScrollRight}
+              aria-label="Next specialists"
+              className="grid size-11 place-items-center rounded-full border border-border bg-background text-foreground transition-all duration-200 hover:bg-[#008953] hover:text-white hover:border-[#008953] disabled:opacity-30 disabled:pointer-events-none shadow-xs cursor-pointer"
+            >
+              <ChevronRight size={20} />
+            </button>
+          </div>
         </div>
 
-        <div className="hide-scrollbar flex snap-x gap-5 overflow-x-auto pb-6 md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-visible">
+        <div
+          ref={scrollContainerRef}
+          className="hide-scrollbar flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth pb-6 pt-1"
+        >
           {loading && doctorsList.length === 0
             ? Array.from({ length: 4 }).map((_, idx) => (
                 <div
                   key={idx}
-                  className="min-w-[78vw] snap-center rounded-2xl p-2.5 sm:min-w-[280px] lg:min-w-0"
+                  className="snap-start shrink-0 rounded-2xl p-2.5 w-[85%] sm:w-[calc((100%-24px)/2)] lg:w-[calc((100%-48px)/3)] max-w-[85%] sm:max-w-[calc((100%-24px)/2)] lg:max-w-[calc((100%-48px)/3)]"
                 >
                   <div className="aspect-[853/1024] w-full rounded-xl bg-muted animate-pulse" />
                   <div className="pt-3.5 px-1 space-y-2">
@@ -555,7 +670,7 @@ export function Specialists() {
                   <article
                     key={doctor.id}
                     onClick={() => handleDoctorConsultation(doctor.id, isPresent, doctor.name)}
-                    className="group relative cursor-pointer min-w-[78vw] snap-center rounded-2xl p-2.5 transition-all duration-300 hover:shadow-xl sm:min-w-[280px] lg:min-w-0 border border-border/70 bg-muted/60 hover:border-border"
+                    className="group relative cursor-pointer snap-start shrink-0 rounded-2xl p-2.5 transition-all duration-300 hover:shadow-xl border border-border/70 bg-muted/60 hover:border-border w-[85%] sm:w-[calc((100%-24px)/2)] lg:w-[calc((100%-48px)/3)] max-w-[85%] sm:max-w-[calc((100%-24px)/2)] lg:max-w-[calc((100%-48px)/3)]"
                     role="button"
                     tabIndex={0}
                     onKeyDown={(e) => {
@@ -565,7 +680,13 @@ export function Specialists() {
                       }
                     }}
                   >
-                    <div className="doctor-photo relative aspect-[853/1024] overflow-hidden rounded-xl bg-muted">
+                    <div
+                      className={`doctor-photo relative aspect-[853/1024] overflow-hidden rounded-xl ${
+                        doctor.image === specialistDrFathima || doctor.image === specialistDrNidhash
+                          ? "bg-[#9ea6af]"
+                          : "bg-muted"
+                      }`}
+                    >
                       <img
                         src={doctor.image}
                         alt={`${doctor.name}, ${doctor.specialty} specialist`}

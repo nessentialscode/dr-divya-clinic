@@ -19,11 +19,11 @@ export function Brand({ inverse = false }: { inverse?: boolean }) {
     <Link
       to="/"
       className="flex shrink-0 items-center gap-3.5 text-inherit transition-opacity hover:opacity-90 sm:gap-4"
-      aria-label="Dr. Divya's Family Dental Clinic"
+      aria-label="Dr. Divya's Ayankalam Dental Clinic"
     >
       <img
         src={clinicLogoMark}
-        alt="Dr. Divya's Family Dental Clinic Logo"
+        alt="Dr. Divya's Ayankalam Dental Clinic Logo"
         width={58}
         height={58}
         className="h-11 w-11 sm:h-[54px] sm:w-[54px] object-contain shrink-0 drop-shadow-sm rounded-full"
@@ -38,7 +38,7 @@ export function Brand({ inverse = false }: { inverse?: boolean }) {
         </span>
 
         <span className="mt-1.5 text-[11px] font-bold uppercase tracking-[0.22em] text-[#dbb335] sm:text-[14px]">
-          Family Dental Clinic
+          Ayankalam Dental Clinic
         </span>
       </div>
     </Link>
@@ -50,46 +50,66 @@ export function Header({ mode = "absolute" }: { mode?: "absolute" | "sticky" }) 
 
   const headerContainerClass =
     mode === "sticky"
-      ? "sticky top-0 z-40 bg-footer text-hero-foreground border-b border-white/10 backdrop-blur-md shadow-md"
+      ? "sticky top-0 z-40 bg-footer/90 text-hero-foreground border-b border-white/10 backdrop-blur-md shadow-md transition-all duration-300"
       : "absolute inset-x-0 top-0 z-30 text-hero-foreground";
 
   return (
     <header className={headerContainerClass}>
-      <div className="site-container grid h-20 grid-cols-[minmax(0,1fr)_auto] items-center sm:h-24 md:flex md:justify-between">
+      <div className="site-container flex h-20 items-center justify-between sm:h-24">
         <Brand inverse />
 
+        {/* Center Desktop Navigation */}
         <nav
-          className="hidden items-center gap-8 text-xs font-medium md:flex"
+          className="hidden items-center gap-8 lg:gap-10 text-[15px] font-medium tracking-wide md:flex"
           aria-label="Primary navigation"
         >
-          {links.map(([label, href]) => (
-            <a key={href} href={href} className="nav-link">
-              {label}
-            </a>
-          ))}
+          {links.map(([label, href]) => {
+            const isHome = label === "Home";
+            return (
+              <a
+                key={href}
+                href={href}
+                className={`relative py-1.5 transition-colors ${
+                  isHome ? "text-white font-medium" : "text-white/80 hover:text-white"
+                }`}
+              >
+                {label}
+                {isHome && (
+                  <span className="absolute bottom-0 left-0 right-0 h-[2.5px] rounded-full bg-[#dbb335]" />
+                )}
+              </a>
+            );
+          })}
         </nav>
 
-        <AppointmentTrigger className="hidden bg-background text-foreground hover:bg-background/90 md:inline-flex">
-          <span className="grid size-6 place-items-center rounded-full bg-foreground text-background">
-            ↗
-          </span>
-          Contact Us
-        </AppointmentTrigger>
+        {/* Actions (Desktop & Mobile) */}
+        <div className="flex items-center gap-3 sm:gap-4">
+          <AppointmentTrigger
+            variant="ghost"
+            className="h-auto rounded-full bg-white px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-semibold text-neutral-900 shadow-md hover:bg-white/95 active:scale-95 transition-all inline-flex items-center gap-2 border-0"
+          >
+            <span className="flex size-5 sm:size-6 items-center justify-center rounded-full bg-black text-white shrink-0">
+              <span className="text-xs sm:text-sm font-bold leading-none select-none">↗</span>
+            </span>
+            <span className="font-semibold tracking-tight text-neutral-900">Contact Us</span>
+          </AppointmentTrigger>
 
-        <Button
-          variant="outline"
-          className="size-11 p-0 text-hero-foreground md:hidden"
-          aria-label={open ? "Close navigation" : "Open navigation"}
-          aria-expanded={open}
-          onClick={() => setOpen((value) => !value)}
-        >
-          {open ? <X size={19} /> : <Menu size={19} />}
-        </Button>
+          {/* Clean Hamburger for mobile (matching Image 2) */}
+          <button
+            type="button"
+            className="flex items-center justify-center p-1.5 text-white hover:text-white/85 transition-colors md:hidden focus:outline-none"
+            aria-label={open ? "Close navigation" : "Open navigation"}
+            aria-expanded={open}
+            onClick={() => setOpen((value) => !value)}
+          >
+            {open ? <X size={26} /> : <Menu size={26} className="stroke-[2.2]" />}
+          </button>
+        </div>
       </div>
 
       {open && (
         <nav
-          className="mx-4 rounded-lg border border-hero-foreground/15 bg-footer p-3 shadow-2xl md:hidden"
+          className="mx-4 mt-2 rounded-xl border border-white/10 bg-footer/95 p-4 shadow-2xl backdrop-blur-xl md:hidden animate-in fade-in slide-in-from-top-3 duration-200"
           aria-label="Mobile navigation"
         >
           {links.map(([label, href]) => (
@@ -97,13 +117,11 @@ export function Header({ mode = "absolute" }: { mode?: "absolute" | "sticky" }) 
               key={href}
               href={href}
               onClick={() => setOpen(false)}
-              className="block rounded-md px-4 py-3 text-sm hover:bg-background/10"
+              className="block rounded-lg px-4 py-3 text-base font-medium text-white/90 hover:bg-white/10 hover:text-white transition-colors"
             >
               {label}
             </a>
           ))}
-
-          <AppointmentTrigger className="mt-2 w-full">Contact Us</AppointmentTrigger>
         </nav>
       )}
     </header>

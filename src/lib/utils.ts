@@ -14,5 +14,14 @@ export function normalizeDoctorDisplayName(name: string): string {
   if (lower.includes("anas") || lower.includes("nidhash")) {
     return "Dr. Nidhash Saddik";
   }
+  if (lower.includes("fathima") || lower.includes("roosa") || lower.includes("fidha")) {
+    return "Dr. Fathima Roosa Fidha TP";
+  }
+  if (lower.includes("lijeesh")) {
+    return "Dr. Lijeesh Kadambil";
+  }
+  if (lower.includes("rathish") || lower.includes("ratheesh tk")) {
+    return "Dr. Rathish T.K";
+  }
   return name;
 }
