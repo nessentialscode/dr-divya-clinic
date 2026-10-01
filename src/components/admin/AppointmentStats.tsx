@@ -61,7 +61,9 @@ export function AppointmentStats({ stats }: AppointmentStatsProps) {
           <span className="text-[9px] sm:text-[11px] font-bold tracking-wider uppercase text-slate-500 leading-tight break-words">
             {card.label}
           </span>
-          <span className={`text-xl sm:text-3xl font-extrabold mt-1.5 sm:mt-2 tracking-tight ${card.textColor}`}>
+          <span
+            className={`text-xl sm:text-3xl font-extrabold mt-1.5 sm:mt-2 tracking-tight ${card.textColor}`}
+          >
             {card.value}
           </span>
         </div>

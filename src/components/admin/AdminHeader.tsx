@@ -67,10 +67,7 @@ export function AdminHeader({
               aria-label="Refresh dashboard data"
               className="inline-flex items-center justify-center size-8 sm:size-8.5 rounded-lg border border-slate-200 bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors disabled:opacity-50"
             >
-              <RotateCcw
-                size={14}
-                className={isRefreshing ? "animate-spin" : ""}
-              />
+              <RotateCcw size={14} className={isRefreshing ? "animate-spin" : ""} />
             </button>
           )}
 

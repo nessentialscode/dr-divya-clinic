@@ -1,19 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
+import { normalizeDoctorDisplayName } from "@/lib/utils";
 import { AdminHeader } from "./AdminHeader";
-import {
-  ClinicAvailability,
-  type ClinicBranch,
-} from "./ClinicAvailability";
-import {
-  DoctorAvailability,
-  type DoctorRecord,
-} from "./DoctorAvailability";
-import {
-  AppointmentStats,
-  type AppointmentStatsData,
-} from "./AppointmentStats";
+import { ClinicAvailability, type ClinicBranch } from "./ClinicAvailability";
+import { DoctorAvailability, type DoctorRecord } from "./DoctorAvailability";
+import { AppointmentStats, type AppointmentStatsData } from "./AppointmentStats";
 import {
   AppointmentFilters,
   type AppointmentFilterState,
@@ -21,10 +13,7 @@ import {
 } from "./AppointmentFilters";
 import { AppointmentList } from "./AppointmentList";
 import type { AppointmentRecord } from "./AppointmentDetailDialog";
-import {
-  FeedbackModeration,
-  type PatientFeedbackItem,
-} from "./FeedbackModeration";
+import { FeedbackModeration, type PatientFeedbackItem } from "./FeedbackModeration";
 
 interface AdminPortalProps {
   userEmail?: string | null | undefined;
@@ -69,15 +58,12 @@ export function AdminPortal({ userEmail, onSignOut }: AdminPortalProps) {
     setIsRefreshing(true);
 
     try {
-      const [
-        clinicsRes,
-        doctorsRes,
-        servicesRes,
-        apptsRes,
-        feedbackRes,
-      ] = await Promise.all([
+      const [clinicsRes, doctorsRes, servicesRes, apptsRes, feedbackRes] = await Promise.all([
         supabase.from("clinics").select("*").order("display_order", { ascending: true }),
-        supabase.from("specialists").select("id, name, specialty, active, is_available").order("created_at"),
+        supabase
+          .from("specialists")
+          .select("id, name, specialty, active, is_available")
+          .order("created_at"),
         supabase.from("services").select("id, name").order("name"),
         supabase.from("appointments").select("*").order("created_at", { ascending: false }),
         supabase.from("patient_feedback").select("*").order("created_at", { ascending: false }),
@@ -120,9 +106,7 @@ export function AdminPortal({ userEmail, onSignOut }: AdminPortalProps) {
     const newActive = !currentActive;
 
     // Optimistic update
-    setClinics((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, active: newActive } : c)),
-    );
+    setClinics((prev) => prev.map((c) => (c.id === id ? { ...c, active: newActive } : c)));
 
     const { error } = await supabase
       .from("clinics")
@@ -131,9 +115,7 @@ export function AdminPortal({ userEmail, onSignOut }: AdminPortalProps) {
 
     if (error) {
       // Revert on error
-      setClinics((prev) =>
-        prev.map((c) => (c.id === id ? { ...c, active: currentActive } : c)),
-      );
+      setClinics((prev) => prev.map((c) => (c.id === id ? { ...c, active: currentActive } : c)));
       toast.error(`Failed to update clinic: ${error.message}`);
     } else {
       toast.success(
@@ -151,9 +133,7 @@ export function AdminPortal({ userEmail, onSignOut }: AdminPortalProps) {
     const docName = targetDoc ? targetDoc.name : "Specialist";
 
     // Optimistic update
-    setDoctors((prev) =>
-      prev.map((d) => (d.id === id ? { ...d, is_available: newAvailable } : d)),
-    );
+    setDoctors((prev) => prev.map((d) => (d.id === id ? { ...d, is_available: newAvailable } : d)));
 
     const { error } = await supabase
       .from("specialists")
@@ -167,11 +147,7 @@ export function AdminPortal({ userEmail, onSignOut }: AdminPortalProps) {
       );
       toast.error(`Failed to update doctor availability: ${error.message}`);
     } else {
-      toast.success(
-        newAvailable
-          ? `${docName} marked PRESENT`
-          : `${docName} marked ABSENT`,
-      );
+      toast.success(newAvailable ? `${docName} marked PRESENT` : `${docName} marked ABSENT`);
     }
   };
 
@@ -189,9 +165,7 @@ export function AdminPortal({ userEmail, onSignOut }: AdminPortalProps) {
     const prevStatus = currentAppt?.status;
 
     // Optimistic update
-    setAppointments((prev) =>
-      prev.map((a) => (a.id === id ? { ...a, status: newStatus } : a)),
-    );
+    setAppointments((prev) => prev.map((a) => (a.id === id ? { ...a, status: newStatus } : a)));
 
     const { error } = await supabase
       .from("appointments")
@@ -218,9 +192,7 @@ export function AdminPortal({ userEmail, onSignOut }: AdminPortalProps) {
     const prevStatus = feedbackList.find((f) => f.id === id)?.status;
 
     // Optimistic update
-    setFeedbackList((prev) =>
-      prev.map((f) => (f.id === id ? { ...f, status: newStatus } : f)),
-    );
+    setFeedbackList((prev) => prev.map((f) => (f.id === id ? { ...f, status: newStatus } : f)));
 
     const { error } = await supabase
       .from("patient_feedback")
@@ -244,10 +216,7 @@ export function AdminPortal({ userEmail, onSignOut }: AdminPortalProps) {
     const prev = feedbackList;
     setFeedbackList((current) => current.filter((f) => f.id !== id));
 
-    const { error } = await supabase
-      .from("patient_feedback")
-      .delete()
-      .eq("id", id);
+    const { error } = await supabase.from("patient_feedback").delete().eq("id", id);
 
     if (error) {
       setFeedbackList(prev);
@@ -289,7 +258,7 @@ export function AdminPortal({ userEmail, onSignOut }: AdminPortalProps) {
   const doctorMap = useMemo(() => {
     const map = new Map<string, string>();
     for (const d of doctors) {
-      map.set(d.id, d.name);
+      map.set(d.id, normalizeDoctorDisplayName(d.name));
     }
     return map;
   }, [doctors]);
@@ -343,7 +312,7 @@ export function AdminPortal({ userEmail, onSignOut }: AdminPortalProps) {
 
         return true;
       });
-  }, [appointments, filters, doctorMap, serviceMap]);
+  }, [appointments, filters, doctorMap, serviceMap, clinics]);
 
   return (
     <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#f4f8f6] text-slate-800 font-sans p-2.5 sm:p-5 lg:p-7 selection:bg-teal-100">

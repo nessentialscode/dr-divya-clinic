@@ -30,8 +30,7 @@ export const Route = createFileRoute("/services/$slug")({
       ? `${loaderData.service.title} — Dr. Divya's Dental Clinic`
       : "Dental Service Details — Dr. Divya's Dental Clinic";
     const desc =
-      loaderData?.service?.shortCopy ||
-      "Comprehensive modern dental service explained in detail.";
+      loaderData?.service?.shortCopy || "Comprehensive modern dental service explained in detail.";
     return {
       meta: [
         { title },
@@ -55,8 +54,8 @@ function ServiceNotFoundComponent() {
           We couldn't locate this dental service
         </h1>
         <p className="mt-3 max-w-md text-sm text-muted-foreground">
-          The service you are looking for might have been moved or renamed.
-          Please browse our full directory of dental treatments.
+          The service you are looking for might have been moved or renamed. Please browse our full
+          directory of dental treatments.
         </p>
         <div className="mt-8 flex flex-wrap gap-4">
           <Button asChild>
@@ -91,23 +90,15 @@ function ServiceDetailComponent() {
         >
           <div className="site-container flex flex-wrap items-center justify-between gap-4 text-xs font-medium text-muted-foreground">
             <div className="flex items-center gap-2">
-              <Link
-                to="/"
-                className="transition-colors hover:text-foreground"
-              >
+              <Link to="/" className="transition-colors hover:text-foreground">
                 Home
               </Link>
               <ChevronRight size={14} className="opacity-50" />
-              <Link
-                to="/services"
-                className="transition-colors hover:text-foreground"
-              >
+              <Link to="/services" className="transition-colors hover:text-foreground">
                 Services
               </Link>
               <ChevronRight size={14} className="opacity-50" />
-              <span className="truncate text-foreground font-semibold">
-                {service.title}
-              </span>
+              <span className="truncate text-foreground font-semibold">{service.title}</span>
             </div>
 
             <Link
@@ -128,9 +119,7 @@ function ServiceDetailComponent() {
               {/* Left Column: Headlines & CTA */}
               <div className="lg:col-span-7">
                 <div className="flex flex-wrap items-center gap-3">
-                  <span className="eyebrow bg-background shadow-xs">
-                    {service.heroBadge}
-                  </span>
+                  <span className="eyebrow bg-background shadow-xs">{service.heroBadge}</span>
                   <span className="rounded-full border border-primary/20 bg-primary/10 px-3 py-0.5 text-xs font-semibold text-foreground">
                     {service.tag}
                   </span>
@@ -149,18 +138,14 @@ function ServiceDetailComponent() {
                   <div className="flex items-center gap-2 rounded-lg border border-border/80 bg-background/80 px-3.5 py-2 backdrop-blur">
                     <Clock size={16} className="text-primary" />
                     <span>
-                      <strong className="font-semibold text-foreground">
-                        Duration:
-                      </strong>{" "}
+                      <strong className="font-semibold text-foreground">Duration:</strong>{" "}
                       {service.estimatedDuration}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 rounded-lg border border-border/80 bg-background/80 px-3.5 py-2 backdrop-blur">
                     <CheckCircle2 size={16} className="text-primary" />
                     <span>
-                      <strong className="font-semibold text-foreground">
-                        Suitability:
-                      </strong>{" "}
+                      <strong className="font-semibold text-foreground">Suitability:</strong>{" "}
                       {service.idealFor}
                     </span>
                   </div>
@@ -202,9 +187,7 @@ function ServiceDetailComponent() {
                         <Icon size={20} />
                       </div>
                       <div>
-                        <div className="text-xs font-semibold text-foreground">
-                          {service.title}
-                        </div>
+                        <div className="text-xs font-semibold text-foreground">{service.title}</div>
                         <div className="text-[11px] text-muted-foreground">
                           Dr. Divya's Dental Clinic
                         </div>
@@ -260,13 +243,8 @@ function ServiceDetailComponent() {
                     key={idx}
                     className="flex items-start gap-3 rounded-xl border border-primary/20 bg-secondary/60 p-4 transition-colors hover:border-primary/40"
                   >
-                    <AlertCircle
-                      size={18}
-                      className="mt-0.5 shrink-0 text-amber-600"
-                    />
-                    <span className="text-sm font-medium text-foreground">
-                      {symptom}
-                    </span>
+                    <AlertCircle size={18} className="mt-0.5 shrink-0 text-amber-600" />
+                    <span className="text-sm font-medium text-foreground">{symptom}</span>
                   </div>
                 ))}
               </div>
@@ -279,9 +257,8 @@ function ServiceDetailComponent() {
                 Key Benefits & <em>Lasting Value</em>
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
-                Under the careful hands of our certified specialists, our clinical
-                protocols are designed for utmost longevity, natural aesthetics,
-                and absolute peace of mind.
+                Under the careful hands of our certified specialists, our clinical protocols are
+                designed for utmost longevity, natural aesthetics, and absolute peace of mind.
               </p>
 
               <div className="mt-8 space-y-3.5">
@@ -290,13 +267,8 @@ function ServiceDetailComponent() {
                     key={idx}
                     className="flex items-start gap-3 rounded-xl border border-primary/20 bg-background p-4 shadow-2xs transition-colors hover:border-primary/40"
                   >
-                    <CheckCircle2
-                      size={18}
-                      className="mt-0.5 shrink-0 text-emerald-600"
-                    />
-                    <span className="text-sm font-medium text-foreground">
-                      {benefit}
-                    </span>
+                    <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-emerald-600" />
+                    <span className="text-sm font-medium text-foreground">{benefit}</span>
                   </div>
                 ))}
               </div>
@@ -313,8 +285,8 @@ function ServiceDetailComponent() {
                 Procedures Included in <em>{service.title}</em>
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
-                We customize each treatment according to your individual dental
-                condition, aesthetic preference, and long-term oral health goals.
+                We customize each treatment according to your individual dental condition, aesthetic
+                preference, and long-term oral health goals.
               </p>
             </div>
 
@@ -328,9 +300,7 @@ function ServiceDetailComponent() {
                     <span className="grid size-8 place-items-center rounded-lg bg-primary/15 text-xs font-bold text-foreground">
                       {idx + 1}
                     </span>
-                    <h3 className="text-base font-semibold text-foreground">
-                      {proc.name}
-                    </h3>
+                    <h3 className="text-base font-semibold text-foreground">{proc.name}</h3>
                   </div>
                   <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                     {proc.description}
@@ -349,8 +319,8 @@ function ServiceDetailComponent() {
               What to Expect: <em>Step-by-Step</em>
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-              Clear, transparent, and comfortable care from your initial
-              consultation to post-treatment follow-up.
+              Clear, transparent, and comfortable care from your initial consultation to
+              post-treatment follow-up.
             </p>
           </div>
 
@@ -364,9 +334,7 @@ function ServiceDetailComponent() {
                   <span className="text-3xl font-bold tracking-tight text-primary/80">
                     {step.step}
                   </span>
-                  <h3 className="mt-3 text-base font-semibold text-foreground">
-                    {step.title}
-                  </h3>
+                  <h3 className="mt-3 text-base font-semibold text-foreground">{step.title}</h3>
                   <p className="mt-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">
                     {step.description}
                   </p>
@@ -386,8 +354,8 @@ function ServiceDetailComponent() {
                   Specialists for <em>{service.title}</em>
                 </h2>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Our certified surgeons and consultants provide specialized care
-                  for this treatment.
+                  Our certified surgeons and consultants provide specialized care for this
+                  treatment.
                 </p>
               </div>
 
@@ -413,12 +381,8 @@ function ServiceDetailComponent() {
                       <Stethoscope size={18} />
                     </div>
                     <div>
-                      <div className="font-semibold text-foreground">
-                        {doc.name}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {doc.role}
-                      </div>
+                      <div className="font-semibold text-foreground">{doc.name}</div>
+                      <div className="text-xs text-muted-foreground">{doc.role}</div>
                     </div>
                   </div>
 
@@ -454,14 +418,9 @@ function ServiceDetailComponent() {
                   className="rounded-xl border border-border/80 bg-background p-5 shadow-2xs"
                 >
                   <div className="flex items-start gap-3">
-                    <HelpCircle
-                      size={18}
-                      className="mt-0.5 shrink-0 text-primary"
-                    />
+                    <HelpCircle size={18} className="mt-0.5 shrink-0 text-primary" />
                     <div>
-                      <h3 className="font-semibold text-foreground">
-                        {faq.question}
-                      </h3>
+                      <h3 className="font-semibold text-foreground">{faq.question}</h3>
                       <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                         {faq.answer}
                       </p>
@@ -479,9 +438,7 @@ function ServiceDetailComponent() {
             <div className="flex items-center justify-between">
               <div>
                 <span className="eyebrow bg-background">Explore More</span>
-                <h2 className="mt-3 text-xl font-semibold sm:text-2xl">
-                  Other Dental Services
-                </h2>
+                <h2 className="mt-3 text-xl font-semibold sm:text-2xl">Other Dental Services</h2>
               </div>
               <Button variant="ghost" asChild className="text-xs sm:text-sm">
                 <Link to="/services">
@@ -511,7 +468,10 @@ function ServiceDetailComponent() {
                   </div>
                   <div className="mt-4 flex items-center gap-1 text-xs font-semibold text-primary">
                     <span>Read Explanation</span>
-                    <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
+                    <ArrowRight
+                      size={13}
+                      className="transition-transform group-hover:translate-x-1"
+                    />
                   </div>
                 </Link>
               ))}
@@ -527,8 +487,8 @@ function ServiceDetailComponent() {
               <em className="font-serif italic">{service.title}?</em>
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-sm text-hero-foreground/80 sm:text-base">
-              Schedule your appointment online in under 60 seconds or speak
-              directly with our friendly clinical coordinators.
+              Schedule your appointment online in under 60 seconds or speak directly with our
+              friendly clinical coordinators.
             </p>
 
             <div className="mt-8 flex flex-wrap justify-center gap-4">

@@ -1,18 +1,9 @@
-import {
-  Calendar,
-  Clock,
-  Loader2,
-  Mail,
-  MapPin,
-  Phone,
-  Stethoscope,
-  User,
-  X,
-} from "lucide-react";
+import { Calendar, Clock, Loader2, Phone, Stethoscope, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { WhatsAppIcon, buildWhatsAppConfirmationUrl } from "@/lib/whatsapp";
+import { buildWhatsAppConfirmationUrl } from "@/lib/whatsapp";
+import { WhatsAppIcon } from "@/components/dental/WhatsAppIcon";
 
 export interface AppointmentRecord {
   id: string;
@@ -47,6 +38,26 @@ export function AppointmentDetailDialog({
 }: AppointmentDetailDialogProps) {
   if (!open || !appointment) return null;
 
+  return (
+    <AppointmentDetailDialogContent
+      appointment={appointment}
+      onOpenChange={onOpenChange}
+      onStatusChange={onStatusChange}
+    />
+  );
+}
+
+interface AppointmentDetailDialogContentProps {
+  appointment: AppointmentRecord;
+  onOpenChange: (open: boolean) => void;
+  onStatusChange: (id: string, newStatus: AppointmentRecord["status"]) => Promise<void>;
+}
+
+function AppointmentDetailDialogContent({
+  appointment,
+  onOpenChange,
+  onStatusChange,
+}: AppointmentDetailDialogContentProps) {
   const [status, setStatus] = useState<AppointmentRecord["status"]>(appointment.status);
   const [updating, setUpdating] = useState(false);
 
@@ -95,9 +106,7 @@ export function AppointmentDetailDialog({
             <span className="text-[10px] font-bold uppercase tracking-wider text-sky-600">
               Appointment Inquiry Details
             </span>
-            <h2 className="text-lg font-bold text-slate-900 mt-0.5">
-              {appointment.patient_name}
-            </h2>
+            <h2 className="text-lg font-bold text-slate-900 mt-0.5">{appointment.patient_name}</h2>
           </div>
           <button
             type="button"
@@ -165,7 +174,9 @@ export function AppointmentDetailDialog({
               {appointment.message ? (
                 appointment.message
               ) : (
-                <span className="text-slate-400 italic">No additional notes provided by patient.</span>
+                <span className="text-slate-400 italic">
+                  No additional notes provided by patient.
+                </span>
               )}
             </div>
           </div>
@@ -191,9 +202,7 @@ export function AppointmentDetailDialog({
               <option value="contacted">Contacted (Staff in touch)</option>
               <option value="confirmed">Confirmed (Appointment scheduled)</option>
               <option value="completed">Completed (Treatment done)</option>
-              {appointment.status !== "confirmed" && (
-                <option value="cancelled">Cancelled</option>
-              )}
+              {appointment.status !== "confirmed" && <option value="cancelled">Cancelled</option>}
             </select>
           </div>
 

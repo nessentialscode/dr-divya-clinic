@@ -45,10 +45,5 @@ function AdminIndexRouteComponent() {
     return null;
   }
 
-  return (
-    <AdminPortal
-      userEmail={user.email}
-      onSignOut={handleSignOut}
-    />
-  );
+  return <AdminPortal userEmail={user.email} onSignOut={handleSignOut} />;
 }

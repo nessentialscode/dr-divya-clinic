@@ -55,14 +55,15 @@ DESIGN DIRECTION
 The visual direction is:
 
 Premium dental healthcare
-+ editorial design
-+ modern Swiss-inspired layout
-+ soft clinical aesthetic
-+ sophisticated typography
-+ subtle organic shapes
-+ large photography
-+ restrained animation
-+ generous whitespace.
+
+- editorial design
+- modern Swiss-inspired layout
+- soft clinical aesthetic
+- sophisticated typography
+- subtle organic shapes
+- large photography
+- restrained animation
+- generous whitespace.
 
 The design should NOT look like:
 
@@ -142,8 +143,9 @@ Build the following sections in this order:
 9. FOOTER
 
 ==================================================
+
 1. HEADER
-==================================================
+   \==================================================
 
 Create a compact premium navigation.
 
@@ -176,8 +178,7 @@ Do not simply shrink the desktop navigation.
 
 Create a proper mobile navigation structure.
 
-==================================================
-2. HERO
+================================================== 2. HERO
 ==================================================
 
 This is one of the most important sections.
@@ -226,8 +227,7 @@ Use:
 
 Do not make the hero look like a standard two-column SaaS hero.
 
-==================================================
-3. ABOUT / PHILOSOPHY
+================================================== 3. ABOUT / PHILOSOPHY
 ==================================================
 
 Create a clean editorial section.
@@ -254,8 +254,7 @@ button.
 
 The section should have generous whitespace.
 
-==================================================
-4. CORE VALUES
+================================================== 4. CORE VALUES
 ==================================================
 
 Create a two-column composition.
@@ -296,8 +295,7 @@ Large editorial heading:
 
 Supporting paragraph below.
 
-==================================================
-5. DOCTORS / SPECIALISTS
+================================================== 5. DOCTORS / SPECIALISTS
 ==================================================
 
 Create a premium specialist section.
@@ -341,8 +339,7 @@ Cards should become horizontally scrollable or stack elegantly.
 
 Do not allow the cards to become tiny on mobile.
 
-==================================================
-6. TESTIMONIALS
+================================================== 6. TESTIMONIALS
 ==================================================
 
 Create the testimonial section based closely on the reference.
@@ -367,8 +364,7 @@ The cards should have slightly different visual treatments while remaining withi
 
 Use soft cream/green/neutral backgrounds.
 
-==================================================
-7. PRICING / CARE PLAN
+================================================== 7. PRICING / CARE PLAN
 ==================================================
 
 Create a pale green/cream section.
@@ -416,8 +412,7 @@ The pricing card should visually float above the background.
 
 Use subtle shadow and rounded corners.
 
-==================================================
-8. NEWSLETTER
+================================================== 8. NEWSLETTER
 ==================================================
 
 Create a dark section.
@@ -436,8 +431,7 @@ Subscribe button
 
 Include a short supporting statement.
 
-==================================================
-9. FOOTER
+================================================== 9. FOOTER
 ==================================================
 
 Create the dark premium footer shown in the reference.
@@ -547,18 +541,22 @@ INTERACTION FOUNDATION
 Add subtle interactions:
 
 Buttons:
+
 - hover transition
 - slight movement
 - visual feedback
 
 Cards:
+
 - subtle hover elevation
 - image movement where appropriate
 
 Navigation:
+
 - smooth hover state
 
 Scroll:
+
 - smooth scrolling between sections
 
 Do NOT add excessive animation yet.

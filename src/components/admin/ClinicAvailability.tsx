@@ -41,7 +41,8 @@ export function ClinicAvailability({
           </h2>
         </div>
         <p className="text-[11px] sm:text-xs text-slate-500">
-          Active clinics are available for public booking &bull; Inactive clinics are removed from booking
+          Active clinics are available for public booking &bull; Inactive clinics are removed from
+          booking
         </p>
       </div>
 

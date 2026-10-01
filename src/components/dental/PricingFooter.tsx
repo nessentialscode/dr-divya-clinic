@@ -12,30 +12,17 @@ const footerGroups = [
   },
   {
     title: "Services",
-    links: [
-      "General Dentistry",
-      "Dental Implants",
-      "Teeth Whitening",
-      "Orthodontics",
-    ],
+    links: ["General Dentistry", "Dental Implants", "Teeth Whitening", "Orthodontics"],
   },
   {
     title: "Support",
-    links: [
-      "Contact Us",
-      "Book Appointment",
-      "Insurance Information",
-      "Terms & Conditions",
-    ],
+    links: ["Contact Us", "Book Appointment", "Insurance Information", "Terms & Conditions"],
   },
 ];
 
 export function NewsletterFooter() {
   return (
-    <footer
-      id="newsletter"
-      className="bg-footer text-footer-foreground"
-    >
+    <footer id="newsletter" className="bg-footer text-footer-foreground">
       <div className="site-container border-b border-footer-foreground/15 py-16 lg:grid lg:grid-cols-[0.8fr_1.2fr] lg:items-end lg:gap-16">
         <h2 className="text-4xl leading-none sm:text-6xl">
           Subscribe to Our
@@ -70,8 +57,8 @@ export function NewsletterFooter() {
           <Brand inverse />
 
           <p className="mt-6 max-w-sm text-sm leading-6 text-footer-foreground/60">
-            Advanced technology, a compassionate team, and personalized
-            treatments designed to keep your smile healthy for life.
+            Advanced technology, a compassionate team, and personalized treatments designed to keep
+            your smile healthy for life.
           </p>
 
           <div className="mt-7 flex gap-2">
@@ -91,15 +78,12 @@ export function NewsletterFooter() {
         <div className="grid grid-cols-2 gap-10 sm:grid-cols-3">
           {footerGroups.map((group) => (
             <div key={group.title}>
-              <h3 className="text-xs font-semibold">
-                {group.title}
-              </h3>
+              <h3 className="text-xs font-semibold">{group.title}</h3>
 
               <ul className="mt-5 space-y-3">
                 {group.links.map((link) => (
                   <li key={link}>
-                    {group.title === "Support" &&
-                      link === "Book Appointment" ? (
+                    {group.title === "Support" && link === "Book Appointment" ? (
                       <AppointmentTrigger
                         variant="link"
                         className="h-auto p-0 text-xs font-normal text-footer-foreground/55 transition hover:text-primary"
@@ -122,7 +106,7 @@ export function NewsletterFooter() {
         </div>
       </div>
 
-      <div className="site-container border-t border-footer-foreground/15 py-5 text-right text-[11px] text-footer-foreground/45">
+      <div className="site-container border-t border-footer-foreground/15 py-5 text-center sm:text-right text-[11px] text-footer-foreground/45">
         © 2026 Dr. Divya&apos;s Family Dental Clinic. All rights reserved.
       </div>
     </footer>

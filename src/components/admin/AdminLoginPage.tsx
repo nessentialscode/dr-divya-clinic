@@ -114,10 +114,7 @@ export function AdminLoginPage({ onSuccess }: AdminLoginPageProps) {
                 Administrator Email
               </label>
               <div className="relative flex items-center">
-                <Mail
-                  size={16}
-                  className="absolute left-3.5 text-slate-400 pointer-events-none"
-                />
+                <Mail size={16} className="absolute left-3.5 text-slate-400 pointer-events-none" />
                 <input
                   id="admin-email"
                   type="email"
@@ -139,10 +136,7 @@ export function AdminLoginPage({ onSuccess }: AdminLoginPageProps) {
                 Password
               </label>
               <div className="relative flex items-center">
-                <Lock
-                  size={16}
-                  className="absolute left-3.5 text-slate-400 pointer-events-none"
-                />
+                <Lock size={16} className="absolute left-3.5 text-slate-400 pointer-events-none" />
                 <input
                   id="admin-password"
                   type={showPassword ? "text" : "password"}
@@ -183,7 +177,8 @@ export function AdminLoginPage({ onSuccess }: AdminLoginPageProps) {
 
           {/* Security Notice */}
           <p className="mt-6 text-[11px] text-center text-slate-400 leading-relaxed max-w-xs mx-auto">
-            Authorized clinical personnel only. All access attempts and administrative modifications are logged securely.
+            Authorized clinical personnel only. All access attempts and administrative modifications
+            are logged securely.
           </p>
         </div>
       </main>

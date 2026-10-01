@@ -1,4 +1,5 @@
 import { Calendar, Search } from "lucide-react";
+import { normalizeDoctorDisplayName } from "@/lib/utils";
 import type { ClinicBranch } from "./ClinicAvailability";
 import type { DoctorRecord } from "./DoctorAvailability";
 
@@ -150,7 +151,7 @@ export function AppointmentFilters({
             <option value="">All Doctors</option>
             {doctors.map((d) => (
               <option key={d.id} value={d.id}>
-                {d.name}
+                {normalizeDoctorDisplayName(d.name)}
               </option>
             ))}
           </select>

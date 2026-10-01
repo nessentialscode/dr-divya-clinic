@@ -31,8 +31,7 @@ export function Brand({ inverse = false }: { inverse?: boolean }) {
 
       <div className="flex flex-col justify-center leading-none">
         <span
-          className={`text-xl font-extrabold uppercase tracking-[0.08em] sm:text-[25px] ${inverse ? "text-white" : "text-foreground"
-            }`}
+          className={`text-xl font-extrabold uppercase tracking-[0.08em] sm:text-[25px] ${inverse ? "text-white" : "text-foreground"}`}
           style={{ textShadow: "1px 1px 1px rgba(0,0,0,0.35)" }}
         >
           Dr. Divya's
@@ -46,11 +45,7 @@ export function Brand({ inverse = false }: { inverse?: boolean }) {
   );
 }
 
-export function Header({
-  mode = "absolute",
-}: {
-  mode?: "absolute" | "sticky";
-}) {
+export function Header({ mode = "absolute" }: { mode?: "absolute" | "sticky" }) {
   const [open, setOpen] = useState(false);
 
   const headerContainerClass =
@@ -108,9 +103,7 @@ export function Header({
             </a>
           ))}
 
-          <AppointmentTrigger className="mt-2 w-full">
-            Contact Us
-          </AppointmentTrigger>
+          <AppointmentTrigger className="mt-2 w-full">Contact Us</AppointmentTrigger>
         </nav>
       )}
     </header>

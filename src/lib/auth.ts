@@ -36,7 +36,10 @@ export async function checkIsStaff(userId: string): Promise<boolean> {
   }
 }
 
-export async function signInAdmin(email: string, password: string): Promise<{ user: User; session: Session }> {
+export async function signInAdmin(
+  email: string,
+  password: string,
+): Promise<{ user: User; session: Session }> {
   const trimmedEmail = email.trim();
 
   const { data, error } = await supabase.auth.signInWithPassword({

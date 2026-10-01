@@ -1,5 +1,6 @@
 import { Loader2, Stethoscope } from "lucide-react";
 import { useState } from "react";
+import { normalizeDoctorDisplayName } from "@/lib/utils";
 
 export interface DoctorRecord {
   id: string;
@@ -42,7 +43,8 @@ export function DoctorAvailability({
           </h2>
         </div>
         <p className="text-[11px] sm:text-xs text-slate-500">
-          Present specialists are selectable in online booking &bull; Absent specialists are shown as unavailable
+          Present specialists are selectable in online booking &bull; Absent specialists are shown
+          as unavailable
         </p>
       </div>
 
@@ -65,7 +67,7 @@ export function DoctorAvailability({
               >
                 <div className="flex-1 min-w-0 pr-1">
                   <h3 className="text-xs sm:text-sm font-bold text-slate-900 leading-snug truncate">
-                    {doctor.name.toLowerCase().includes("divya") ? "Dr. Divya Lijeesh" : doctor.name}
+                    {normalizeDoctorDisplayName(doctor.name)}
                   </h3>
                   <p className="text-[11px] sm:text-xs text-slate-500 leading-snug mt-0.5 line-clamp-2">
                     {doctor.specialty}

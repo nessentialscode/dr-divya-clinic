@@ -165,8 +165,14 @@
     scroll-behavior: smooth;
     overflow-x: hidden;
   }
-  em { font-family: var(--font-serif); font-weight: 400; }
-  a, button { -webkit-tap-highlight-color: transparent; }
+  em {
+    font-family: var(--font-serif);
+    font-weight: 400;
+  }
+  a,
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
 @utility site-container {
@@ -196,37 +202,54 @@
   position: relative;
   color: color-mix(in oklab, var(--hero-foreground) 70%, transparent);
   transition: color 200ms ease;
-  &:hover { color: var(--hero-foreground); }
-}
-
-.brand-mark {
-  display: inline-block;
-  width: 1.4rem;
-  height: 1.05rem;
-  border: 2px solid;
-  border-radius: 70% 35% 70% 35%;
-  transform: rotate(-35deg);
-  box-shadow: 0.42rem 0 0 -0.1rem currentColor;
+  &:hover {
+    color: var(--hero-foreground);
+  }
 }
 
 .hero-shade {
-  background: linear-gradient(90deg, color-mix(in oklab, var(--footer) 94%, transparent) 0%, color-mix(in oklab, var(--footer) 62%, transparent) 32%, transparent 70%), linear-gradient(0deg, color-mix(in oklab, var(--footer) 40%, transparent), transparent 48%);
+  background:
+    linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--footer) 94%, transparent) 0%,
+      color-mix(in oklab, var(--footer) 62%, transparent) 32%,
+      transparent 70%
+    ),
+    linear-gradient(0deg, color-mix(in oklab, var(--footer) 40%, transparent), transparent 48%);
 }
 
-.doctor-strip { position: absolute; top: 0; height: 100%; width: 400%; max-width: none; object-fit: cover; transition: transform 500ms ease; }
-.doctor-crop-0 { left: 0; }
-.doctor-crop-1 { left: -100%; }
-.doctor-crop-2 { left: -200%; }
-.doctor-crop-3 { left: -300%; }
-.doctor-photo:hover .doctor-strip { transform: scale(1.025); }
-.hide-scrollbar { scrollbar-width: none; }
-.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar {
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
 
 @media (max-width: 767px) {
-  .hero-shade { background: linear-gradient(90deg, color-mix(in oklab, var(--footer) 90%, transparent), color-mix(in oklab, var(--footer) 30%, transparent)), linear-gradient(0deg, color-mix(in oklab, var(--footer) 88%, transparent) 0%, color-mix(in oklab, var(--footer) 50%, transparent) 45%, transparent 75%); }
+  .hero-shade {
+    background:
+      linear-gradient(
+        90deg,
+        color-mix(in oklab, var(--footer) 90%, transparent),
+        color-mix(in oklab, var(--footer) 30%, transparent)
+      ),
+      linear-gradient(
+        0deg,
+        color-mix(in oklab, var(--footer) 88%, transparent) 0%,
+        color-mix(in oklab, var(--footer) 50%, transparent) 45%,
+        transparent 75%
+      );
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

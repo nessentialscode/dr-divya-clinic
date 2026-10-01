@@ -8,11 +8,11 @@ import { AppointmentTrigger } from "@/components/dental/AppointmentTrigger";
 export const Route = createFileRoute("/services/")({
   head: () => ({
     meta: [
-      { title: "All Dental Services — Dr. Divya's Family Dental Clinic" },
+      { title: "All 12 Dental Services — Dr. Divya's Family Dental Clinic" },
       {
         name: "description",
         content:
-          "Explore our complete range of specialized dental treatments: preventive care, cosmetic smile design, orthodontics, implants, and teeth whitening.",
+          "Explore our complete range of 12 specialized dental treatments: Dental Implants, Root Canal Treatment, Braces & Aligners, Teeth Whitening, Veneers & Crowns, Preventive Care, Periodontal Surgery, Oral Surgeries, Dentures, TMJ Splints, Pediatric Dentistry, and Mucosal Pathology.",
       },
     ],
   }),
@@ -33,9 +33,9 @@ function ServicesIndexComponent() {
               Explore Our Comprehensive <em>Dental Treatments</em>
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-              Every smile is unique. Click on any service below to explore detailed
-              clinical explanations, procedure breakdowns, symptom checklists, and
-              specialist recommendations.
+              Every smile is unique. Click on any service below to explore detailed clinical
+              explanations, procedure breakdowns, symptom checklists, and specialist
+              recommendations.
             </p>
           </div>
         </section>
@@ -97,7 +97,10 @@ function ServicesIndexComponent() {
                       className="inline-flex items-center gap-1.5 text-xs font-semibold text-foreground transition-colors group-hover:text-primary"
                     >
                       <span>View Full Details</span>
-                      <ArrowRight size={13} className="transition duration-200 group-hover:translate-x-1" />
+                      <ArrowRight
+                        size={13}
+                        className="transition duration-200 group-hover:translate-x-1"
+                      />
                     </Link>
 
                     <AppointmentTrigger

@@ -1,14 +1,4 @@
-import {
-  Check,
-  CheckCircle2,
-  Clock,
-  Loader2,
-  MessageSquare,
-  Star,
-  Trash2,
-  X,
-  XCircle,
-} from "lucide-react";
+import { Check, Clock, Loader2, MessageSquare, Star, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -41,10 +31,7 @@ export function FeedbackModeration({
   const approvedCount = feedbackList.filter((f) => f.status === "approved").length;
   const rejectedCount = feedbackList.filter((f) => f.status === "rejected").length;
 
-  const handleStatusChange = async (
-    id: string,
-    status: PatientFeedbackItem["status"],
-  ) => {
+  const handleStatusChange = async (id: string, status: PatientFeedbackItem["status"]) => {
     try {
       setUpdatingId(id);
       await onUpdateStatus(id, status);
@@ -127,7 +114,9 @@ export function FeedbackModeration({
                       </span>
                     )}
                     <div className="flex items-center gap-0.5 text-amber-400">
-                      {Array.from({ length: Math.max(0, Math.min(5, Math.floor(Number(item.rating) || 0))) }).map((_, i) => (
+                      {Array.from({
+                        length: Math.max(0, Math.min(5, Math.floor(Number(item.rating) || 0))),
+                      }).map((_, i) => (
                         <Star key={i} size={12} fill="currentColor" />
                       ))}
                     </div>

@@ -1,11 +1,13 @@
 import { ArrowUpRight } from "lucide-react";
 import { AppointmentTrigger } from "./AppointmentTrigger";
-import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/dental-hero.jpg";
 
 export function Hero() {
   return (
-    <section id="home" className="relative min-h-[100dvh] w-full overflow-hidden bg-footer text-hero-foreground md:min-h-screen">
+    <section
+      id="home"
+      className="relative min-h-[100dvh] w-full overflow-hidden bg-footer text-hero-foreground md:min-h-screen"
+    >
       <img
         src={heroImage}
         alt="A healthy natural smile"
@@ -17,10 +19,15 @@ export function Hero() {
       <div className="site-container relative z-10 flex min-h-[100dvh] items-end pb-8 pt-24 sm:pb-12 md:min-h-screen md:pb-14 lg:pb-16">
         <div className="max-w-2xl pb-2 pt-0 md:pb-0 md:pt-0">
           <h1 className="text-[clamp(4.25rem,16vw,7.75rem)] font-medium leading-[0.8] md:leading-[0.79]">
-            Healthy<br />Smiles<br /><em className="font-serif font-normal">Start Here</em>
+            Healthy
+            <br />
+            Smiles
+            <br />
+            <em className="font-serif font-normal">Start Here</em>
           </h1>
           <p className="mt-4 max-w-md text-xs leading-relaxed text-hero-foreground/80 sm:mt-7 sm:text-base sm:leading-6">
-            Modern dental care tailored to your needs, delivered by experienced professionals in a welcoming environment.
+            Modern dental care tailored to your needs, delivered by experienced professionals in a
+            welcoming environment.
           </p>
           <AppointmentTrigger className="mt-5 sm:mt-9">
             <span className="flex items-center justify-center">

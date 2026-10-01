@@ -1,20 +1,10 @@
-import {
-  CalendarDays,
-  Clock,
-  Eye,
-  Inbox,
-  Loader2,
-  Phone,
-  Stethoscope,
-} from "lucide-react";
+import { CalendarDays, Eye, Inbox, Loader2, Phone } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { WhatsAppIcon, buildWhatsAppConfirmationUrl } from "@/lib/whatsapp";
-import {
-  AppointmentDetailDialog,
-  type AppointmentRecord,
-} from "./AppointmentDetailDialog";
+import { buildWhatsAppConfirmationUrl } from "@/lib/whatsapp";
+import { WhatsAppIcon } from "@/components/dental/WhatsAppIcon";
+import { AppointmentDetailDialog, type AppointmentRecord } from "./AppointmentDetailDialog";
 
 interface AppointmentListProps {
   appointments: AppointmentRecord[];
@@ -40,10 +30,7 @@ export function AppointmentList({
     setDetailOpen(true);
   };
 
-  const handleStatusSelect = async (
-    id: string,
-    newStatus: AppointmentRecord["status"],
-  ) => {
+  const handleStatusSelect = async (id: string, newStatus: AppointmentRecord["status"]) => {
     const target = appointments.find((a) => a.id === id);
     if (target?.status === "confirmed" && newStatus === "cancelled") {
       toast.error("Confirmed appointments cannot be changed to Cancelled.");
@@ -198,10 +185,7 @@ export function AppointmentList({
                         value={appt.status}
                         disabled={isUpdating}
                         onChange={(e) =>
-                          handleStatusSelect(
-                            appt.id,
-                            e.target.value as AppointmentRecord["status"],
-                          )
+                          handleStatusSelect(appt.id, e.target.value as AppointmentRecord["status"])
                         }
                         aria-label="Change appointment status"
                         className="text-[11px] py-1 px-2 bg-white border border-slate-200 rounded-lg text-slate-700 outline-none cursor-pointer"
@@ -315,7 +299,10 @@ export function AppointmentList({
                       </td>
 
                       {/* Status */}
-                      <td className="py-3.5 px-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                      <td
+                        className="py-3.5 px-4 whitespace-nowrap"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <div className="flex items-center gap-2">
                           {getStatusBadge(appt.status)}
                           <select
@@ -363,7 +350,10 @@ export function AppointmentList({
                       </td>
 
                       {/* Actions */}
-                      <td className="py-3.5 px-4 text-right sm:pr-6 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                      <td
+                        className="py-3.5 px-4 text-right sm:pr-6 whitespace-nowrap"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <div className="inline-flex items-center gap-1.5 justify-end">
                           {appt.status === "confirmed" && (
                             <a

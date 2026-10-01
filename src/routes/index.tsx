@@ -9,9 +9,19 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Dr. Divya's Family Dental Clinic — Healthy Smiles Start Here" },
-      { name: "description", content: "Personalized modern dental care from trusted specialists, designed around your comfort and confidence." },
-      { property: "og:title", content: "Dr. Divya's Family Dental Clinic — Healthy Smiles Start Here" },
-      { property: "og:description", content: "Premium, personalized dental care for a healthier and more confident smile." },
+      {
+        name: "description",
+        content:
+          "Personalized modern dental care from trusted specialists, designed around your comfort and confidence.",
+      },
+      {
+        property: "og:title",
+        content: "Dr. Divya's Family Dental Clinic — Healthy Smiles Start Here",
+      },
+      {
+        property: "og:description",
+        content: "Premium, personalized dental care for a healthier and more confident smile.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

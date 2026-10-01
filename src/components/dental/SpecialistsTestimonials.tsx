@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { ArrowUpRight, Building2, CalendarX2, CheckCircle2, DoorClosed, MapPin, Quote } from "lucide-react";
+import {
+  ArrowUpRight,
+  Building2,
+  CalendarX2,
+  CheckCircle2,
+  DoorClosed,
+  MapPin,
+  Quote,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import patientImage from "@/assets/about-man.jpg";
@@ -12,15 +20,18 @@ import specialistDrRathish from "@/assets/specialist-dr-rathish.jpg";
 import specialistDrLijeesh from "@/assets/specialist-dr-lijeesh.jpg";
 import specialistDrAslif from "@/assets/specialist-dr-aslif.jpg";
 import specialistDrHaris from "@/assets/specialist-dr-haris.jpg";
+import specialistDrNidhash from "@/assets/specialist-dr-nidhash.jpg";
 
 import { supabase } from "@/lib/supabase";
+import { normalizeDoctorDisplayName } from "@/lib/utils";
 import { AppointmentDialog } from "./AppointmentDialog";
+import { DoctorDetailDialog, DoctorDetailInfo } from "./DoctorDetailDialog";
 
 const orderedDoctorOrder = [
   "Dr. Divya Lijeesh",
   "Dr. Lijeesh Kadambil",
   "Dr. Rathish T.K",
-  "Dr. Anas",
+  "Dr. Nidhash Saddik",
   "Dr. Roshan",
   "Dr. Ratheesh M.S",
   "Dr. Mohamed Aslif",
@@ -42,24 +53,147 @@ type ClinicBranch = {
   active: boolean;
 };
 
-const doctorPhotos: Record<string, string> = {
-  "Dr. Divya Lijeesh": specialistDrDivya,      // Card 1: Dr. Divya Lijeesh
-  "Dr. Divya Nath": specialistDrDivya,
-  "Dr. Rathish T.K": specialistDrRathish,       // Card 2
-  "Dr. Lijeesh Kadambil": specialistDrLijeesh,   // Card 3: Dr. Lijeesh Kadambil
-  "Dr. Anas": specialist1,
-  "Dr. Roshan": specialist4,
-  "Dr. Ratheesh M.S": specialist2,
-  "Dr. Mohamed Aslif": specialistDrAslif,       // Card 7
-  "Dr. Mohamed Haris P.M": specialistDrHaris,   // Card 8
+const doctorDetailsData: Record<string, DoctorDetailInfo> = {
+  divya: {
+    name: "Dr. Divya Lijeesh",
+    designation: "Resident Dental Surgeon",
+    credentials: "BDS • Chief Aesthetic & General Dental Surgeon",
+    experience: "10+ Years Experience",
+    bio: "Dr. Divya Lijeesh is our lead resident dental surgeon, known for her gentle, patient-centric approach and dedication to holistic family dentistry. Specialising in comprehensive preventive care, aesthetic smile transformations, pediatric dentistry, and patient wellness, she ensures every visit is comfortable, transparent, and rewarding for patients of all ages.",
+    highlights: [
+      "Preventive & Family Dentistry",
+      "Aesthetic Restorations & Smile Designing",
+      "Gentle Pediatric Dental Care",
+      "Patient Comfort & Stress-Free Consultations",
+    ],
+  },
+  lijeesh: {
+    name: "Dr. Lijeesh Kadambil",
+    designation: "Chief Dental Surgeon",
+    credentials: "BDS • Chief Dental Surgeon",
+    experience: "11 Years Clinical Experience",
+    bio: "Dr. Lijeesh Kadambil is a highly experienced dental surgeon with expertise in aesthetic dentistry, smile correction, root canal treatment, and surgical extractions, along with a wide range of advanced and technology-driven dental treatments. His practice emphasises precision and clinical excellence, incorporating loupes-assisted dentistry and modern dental technologies to enhance treatment accuracy and outcomes. With 11 years of clinical experience and a commitment to continuous advancement, he provides comprehensive, personalised dental care while maintaining high standards of professionalism and patient satisfaction.",
+    highlights: [
+      "Aesthetic Dentistry & Smile Correction",
+      "Loupes-Assisted Precision Dentistry",
+      "Advanced Single-Sitting Root Canal Treatments",
+      "Surgical & Complex Extractions",
+    ],
+  },
+  rathish: {
+    name: "Dr. Ratheesh TK",
+    designation: "Oral & Maxillofacial Surgeon",
+    credentials: "MDS • Oral & Maxillofacial Surgeon",
+    experience: "Advanced Surgical Specialist",
+    bio: "A dedicated Oral & Maxillofacial Surgeon (MDS) with advanced clinical training in oral and maxillofacial surgery, trauma management, oral implantology, surgical procedures, and emergency care. With extensive hands-on exposure across complex surgical disciplines, he provides precision-driven, evidence-based care with a strong focus on patient safety, comprehensive treatment planning, and optimal surgical outcomes.",
+    highlights: [
+      "Oral & Maxillofacial Surgery",
+      "Trauma Management & Emergency Care",
+      "Oral Implantology & Bone Grafting",
+      "Complex Impactions & Surgical Extractions",
+    ],
+  },
+  nidhash: {
+    name: "Dr. Nidhash Saddik",
+    designation: "Consultant Endodontist",
+    credentials: "BDS, MDS • Consultant Endodontist",
+    experience: "Precision Endodontic Specialist",
+    bio: "Dr. Nidhash Saddik is an expert dental surgeon and consultant endodontist specialising in painless root canal treatments, rotary endodontics, dental restorations, and advanced conservative dentistry. With meticulous attention to detail and modern clinical techniques, he ensures precision care, patient comfort, and long-term tooth preservation.",
+    highlights: [
+      "Microscopic & Rotary Endodontics",
+      "Painless Single-Sitting Root Canal",
+      "Conservative Aesthetic Restorations",
+      "Endodontic Retreatment & Tooth Preservation",
+    ],
+  },
+  roshan: {
+    name: "Dr. Roshan",
+    designation: "Consultant Orthodontist",
+    credentials: "MDS • Orthodontics & Dentofacial Orthopedics",
+    experience: "Certified Orthodontic Specialist",
+    bio: "Dr. Roshan is a certified orthodontist dedicated to crafting harmonious smiles and proper functional occlusion. Specialising in contemporary orthodontic treatments, clear aligners, ceramic braces, and interceptive orthodontics for children and adults, he combines digital precision planning with personalised care.",
+    highlights: [
+      "Clear Aligners & Invisible Braces",
+      "Adult & Adolescent Orthodontics",
+      "Dentofacial Orthopedics & Bite Correction",
+      "Digital Treatment Simulation",
+    ],
+  },
+  ratheeshms: {
+    name: "Dr. Ratheesh M.S",
+    designation: "Consultant Pedodontist",
+    credentials: "MDS • Pediatric & Preventive Dentistry",
+    experience: "Child Dental Care Specialist",
+    bio: "Dr. Ratheesh M.S is a specialist pediatric dentist (pedodontist) focused on delivering compassionate, gentle, and child-friendly dental care. His expertise covers preventative pediatric dentistry, early interceptive orthodontics, pulpectomies, and habit-breaking appliances, helping children build positive lifelong dental habits.",
+    highlights: [
+      "Child-Friendly Preventive Care",
+      "Pediatric Pulpectomies & Crowns",
+      "Space Maintainers & Habit Correctors",
+      "Painless & Anxiety-Free Dentistry",
+    ],
+  },
+  aslif: {
+    name: "Dr. Mohammed Aslif",
+    designation: "MDS • Oral & Maxillofacial Surgeon | Implantologist",
+    credentials: "MDS • Oral & Maxillofacial Surgeon | Implantologist",
+    experience: "Senior Surgical & Implant Specialist",
+    bio: "Dr. Mohammed Aslif is a highly experienced Oral and Maxillofacial Surgeon and Implantologist with extensive expertise in surgical extractions, advanced oral surgery, and implant dentistry. With years of experience in the field, he is committed to delivering precise, evidence-based surgical and implant care through meticulous treatment planning and a patient-centred approach, ensuring high standards of safety and clinical excellence.",
+    highlights: [
+      "Advanced Oral & Implant Surgery",
+      "Complex Extractions & Surgical Impactions",
+      "Sinus Lift & Bone Reconstruction",
+      "Precision Evidence-Based Surgical Care",
+    ],
+  },
+  haris: {
+    name: "Dr. Mohamed Haris PM",
+    designation: "Consultant Periodontist",
+    credentials: "MDS • Consultant Periodontist",
+    experience: "Advanced Periodontal Specialist",
+    bio: "Dr. Mohamed Haris PM is an experienced Periodontist specialising in the diagnosis, prevention, and management of gum and periodontal conditions. His clinical expertise includes flap surgery, root planing, and advanced periodontal surgical and preventive treatments, with a strong focus on preserving gum health and supporting long-term oral health. His meticulous, evidence-based approach ensures comprehensive and personalised periodontal care.",
+    highlights: [
+      "Periodontal Flap Surgery & Regeneration",
+      "Ultrasonic Root Planing & Deep Scaling",
+      "Gingival Aesthetics & Gum Grafting",
+      "Preserving Long-Term Oral Health",
+    ],
+  },
 };
 
-const fallbackPhotos: readonly string[] = [
-  specialist3,
-  specialist4,
-  specialist2,
-  specialist1,
-];
+function cleanDoctorKey(name: string): string {
+  return name.toLowerCase().replace(/[.\s]/g, "");
+}
+
+function getDoctorDetail(doctorName: string): DoctorDetailInfo | null {
+  const clean = cleanDoctorKey(doctorName);
+  if (clean.includes("divya")) return doctorDetailsData["divya"] ?? null;
+  if (clean.includes("lijeesh")) return doctorDetailsData["lijeesh"] ?? null;
+  if (clean.includes("ratheeshms") || (clean.includes("ratheesh") && clean.includes("ms")))
+    return doctorDetailsData["ratheeshms"] ?? null;
+  if (clean.includes("rathish") || clean.includes("ratheesh"))
+    return doctorDetailsData["rathish"] ?? null;
+  if (clean.includes("nidhash") || clean.includes("anas"))
+    return doctorDetailsData["nidhash"] ?? null;
+  if (clean.includes("roshan")) return doctorDetailsData["roshan"] ?? null;
+  if (clean.includes("aslif")) return doctorDetailsData["aslif"] ?? null;
+  if (clean.includes("haris")) return doctorDetailsData["haris"] ?? null;
+  return null;
+}
+
+const doctorPhotos: Record<string, string> = {
+  "Dr. Divya Lijeesh": specialistDrDivya, // Card 1: Dr. Divya Lijeesh
+  "Dr. Divya Nath": specialistDrDivya,
+  "Dr. Lijeesh Kadambil": specialistDrLijeesh, // Card 2: Dr. Lijeesh Kadambil
+  "Dr. Rathish T.K": specialistDrRathish, // Card 3: Dr. Rathish T.K
+  "Dr. Nidhash Saddik": specialistDrNidhash, // Card 4: Dr. Nidhash Saddik (grey background)
+  "Dr. Anas": specialistDrNidhash,
+  "Dr. Roshan": specialist4,
+  "Dr. Ratheesh M.S": specialist2,
+  "Dr. Mohamed Aslif": specialistDrAslif, // Card 7: Dr. Mohamed Aslif
+  "Dr. Mohamed Haris P.M": specialistDrHaris, // Card 8: Dr. Mohamed Haris P.M
+};
+
+const fallbackPhotos: readonly string[] = [specialist3, specialist4, specialist2, specialist1];
 const defaultDoctorPhoto = specialist3;
 
 const testimonials = [
@@ -84,9 +218,16 @@ const testimonials = [
 export function Specialists() {
   const [selectedSpecialistId, setSelectedSpecialistId] = useState<string | undefined>(undefined);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [detailDoctor, setDetailDoctor] = useState<ClinicDoctor | null>(null);
+  const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [doctorsList, setDoctorsList] = useState<ClinicDoctor[]>([]);
   const [loading, setLoading] = useState(true);
   const [clinics, setClinics] = useState<ClinicBranch[]>([]);
+
+  const handleOpenDoctorDetails = (doctor: ClinicDoctor) => {
+    setDetailDoctor(doctor);
+    setDetailDialogOpen(true);
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -129,15 +270,27 @@ export function Specialists() {
 
         // Sort according to the requested 8-doctor order
         const sorted = [...data].sort((a, b) => {
+          const cleanA = cleanDoctorKey(a.name);
+          const cleanB = cleanDoctorKey(b.name);
           const indexA = orderedDoctorOrder.findIndex((name) => {
-            const cleanA = a.name.toLowerCase().replace(/[\.\s]/g, "");
-            const cleanTarget = name.toLowerCase().replace(/[\.\s]/g, "");
-            return cleanA.includes(cleanTarget) || cleanTarget.includes(cleanA) || (cleanA.includes("divya") && cleanTarget.includes("divya"));
+            const cleanTarget = cleanDoctorKey(name);
+            return (
+              cleanA.includes(cleanTarget) ||
+              cleanTarget.includes(cleanA) ||
+              (cleanA.includes("divya") && cleanTarget.includes("divya")) ||
+              ((cleanA.includes("anas") || cleanA.includes("nidhash")) &&
+                cleanTarget.includes("nidhash"))
+            );
           });
           const indexB = orderedDoctorOrder.findIndex((name) => {
-            const cleanB = b.name.toLowerCase().replace(/[\.\s]/g, "");
-            const cleanTarget = name.toLowerCase().replace(/[\.\s]/g, "");
-            return cleanB.includes(cleanTarget) || cleanTarget.includes(cleanB) || (cleanB.includes("divya") && cleanTarget.includes("divya"));
+            const cleanTarget = cleanDoctorKey(name);
+            return (
+              cleanB.includes(cleanTarget) ||
+              cleanTarget.includes(cleanB) ||
+              (cleanB.includes("divya") && cleanTarget.includes("divya")) ||
+              ((cleanB.includes("anas") || cleanB.includes("nidhash")) &&
+                cleanTarget.includes("nidhash"))
+            );
           });
           const orderA = indexA === -1 ? 999 : indexA;
           const orderB = indexB === -1 ? 999 : indexB;
@@ -145,18 +298,15 @@ export function Specialists() {
         });
 
         const merged: ClinicDoctor[] = sorted.map((item, index) => {
-          const displayName = item.name.toLowerCase().includes("divya")
-            ? "Dr. Divya Lijeesh"
-            : item.name;
+          const displayName = normalizeDoctorDisplayName(item.name);
 
+          const cleanName = cleanDoctorKey(displayName);
           const photoKey = Object.keys(doctorPhotos).find((k) => {
-            const cleanK = k.toLowerCase().replace(/[\.\s]/g, "");
-            const cleanName = displayName.toLowerCase().replace(/[\.\s]/g, "");
+            const cleanK = cleanDoctorKey(k);
             return cleanName.includes(cleanK) || cleanK.includes(cleanName);
           });
           const matchedPhoto = photoKey ? doctorPhotos[photoKey] : undefined;
-          const fallbackPhoto =
-            fallbackPhotos[index % fallbackPhotos.length] ?? defaultDoctorPhoto;
+          const fallbackPhoto = fallbackPhotos[index % fallbackPhotos.length] ?? defaultDoctorPhoto;
 
           return {
             id: item.id,
@@ -192,7 +342,7 @@ export function Specialists() {
         },
         () => {
           loadDoctors();
-        }
+        },
       )
       .subscribe();
 
@@ -208,7 +358,7 @@ export function Specialists() {
         },
         () => {
           loadClinicStatus();
-        }
+        },
       )
       .subscribe();
 
@@ -243,7 +393,7 @@ export function Specialists() {
     if (!isClinicOpen) {
       toast.info(
         `The clinic is currently closed today. You can schedule an advance appointment with ${doctorName} for tomorrow onwards.`,
-        { duration: 4500 }
+        { duration: 4500 },
       );
       setSelectedSpecialistId(doctorId);
       setDialogOpen(true);
@@ -253,7 +403,7 @@ export function Specialists() {
     if (!isAvailable) {
       toast.info(
         `${doctorName} is marked absent today. You can still schedule an appointment with our available specialists.`,
-        { duration: 4000 }
+        { duration: 4000 },
       );
       setSelectedSpecialistId(undefined);
       setDialogOpen(true);
@@ -264,10 +414,7 @@ export function Specialists() {
   };
 
   return (
-    <section
-      id="specialists"
-      className="bg-secondary py-20 sm:py-28 lg:py-32"
-    >
+    <section id="specialists" className="bg-secondary py-20 sm:py-28 lg:py-32">
       <div className="site-container">
         {/* Upper part of Our Specialist section: Clinic Open / Closed Status Card */}
         <div className="mb-10 sm:mb-12">
@@ -337,12 +484,16 @@ export function Specialists() {
                       {isClinicOpen ? (
                         <>
                           <CheckCircle2 className="size-3.5 text-emerald-600" />
-                          <span className="font-medium text-emerald-700">Same-Day Bookings Active</span>
+                          <span className="font-medium text-emerald-700">
+                            Same-Day Bookings Active
+                          </span>
                         </>
                       ) : (
                         <>
                           <CalendarX2 className="size-3.5 text-rose-600" />
-                          <span className="font-medium text-rose-700">No Appointments for Today • Advance Booking Open</span>
+                          <span className="font-medium text-rose-700">
+                            No Appointments for Today • Advance Booking Open
+                          </span>
                         </>
                       )}
                     </span>
@@ -378,107 +529,102 @@ export function Specialists() {
           </h2>
 
           <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-muted-foreground sm:text-base">
-            A dedicated team of certified professionals with one goal —
-            your healthiest, happiest smile. Click any doctor to book a consultation.
+            A dedicated team of certified professionals with one goal — your healthiest, happiest
+            smile. Click any doctor to book a consultation.
           </p>
         </div>
 
         <div className="hide-scrollbar flex snap-x gap-5 overflow-x-auto pb-6 md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-visible">
-          {loading && doctorsList.length === 0 ? (
-            Array.from({ length: 4 }).map((_, idx) => (
-              <div
-                key={idx}
-                className="min-w-[78vw] snap-center rounded-2xl p-2.5 sm:min-w-[280px] lg:min-w-0"
-              >
-                <div className="aspect-[853/1024] w-full rounded-xl bg-muted animate-pulse" />
-                <div className="pt-3.5 px-1 space-y-2">
-                  <div className="h-4 w-3/4 rounded bg-muted animate-pulse" />
-                  <div className="h-3 w-1/2 rounded bg-muted animate-pulse" />
-                </div>
-              </div>
-            ))
-          ) : (
-            doctorsList.map((doctor) => {
-              const isPresent = doctor.is_available;
-
-              return (
-                <article
-                  key={doctor.id}
-                  onClick={() => handleDoctorConsultation(doctor.id, isPresent, doctor.name)}
-                  className="group relative cursor-pointer min-w-[78vw] snap-center rounded-2xl p-2.5 transition-all duration-300 hover:shadow-xl sm:min-w-[280px] lg:min-w-0 border border-border/70 bg-muted/60 hover:border-border"
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      handleDoctorConsultation(doctor.id, isPresent, doctor.name);
-                    }
-                  }}
+          {loading && doctorsList.length === 0
+            ? Array.from({ length: 4 }).map((_, idx) => (
+                <div
+                  key={idx}
+                  className="min-w-[78vw] snap-center rounded-2xl p-2.5 sm:min-w-[280px] lg:min-w-0"
                 >
-                  <div className="doctor-photo relative aspect-[853/1024] overflow-hidden rounded-xl bg-muted">
-                    <img
-                      src={doctor.image}
-                      alt={`${doctor.name}, ${doctor.specialty} specialist`}
-                      width={853}
-                      height={1024}
-                      loading="lazy"
-                      className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-105"
-                    />
-
-                    {/* Presence / Absence Status Badge */}
-                    <div className="absolute top-2.5 left-2.5 z-10 pointer-events-none">
-                      {isPresent ? (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-bold tracking-wider uppercase bg-[#ebfbf3]/95 text-[#008953] border border-[#b8f0d4] shadow-sm backdrop-blur-md">
-                          <span className="size-2 rounded-full bg-[#00b069]"></span>
-                          Present
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-bold tracking-wider uppercase bg-rose-50/95 text-rose-700 border border-rose-300 shadow-sm backdrop-blur-md">
-                          <span className="size-2 rounded-full bg-rose-500"></span>
-                          Absent
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Bottom Hover Action Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex items-end p-3">
-                      <span className="text-[11px] font-semibold text-white px-2.5 py-1 rounded-full backdrop-blur-sm bg-black/50">
-                        {isPresent ? "Book Consultation" : "Doctor Absent Today"}
-                      </span>
-                    </div>
+                  <div className="aspect-[853/1024] w-full rounded-xl bg-muted animate-pulse" />
+                  <div className="pt-3.5 px-1 space-y-2">
+                    <div className="h-4 w-3/4 rounded bg-muted animate-pulse" />
+                    <div className="h-3 w-1/2 rounded bg-muted animate-pulse" />
                   </div>
+                </div>
+              ))
+            : doctorsList.map((doctor) => {
+                const isPresent = doctor.is_available;
 
-                  <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 pt-3.5 px-1">
-                    <div className="min-w-0">
-                      <h3 className="truncate font-semibold text-foreground group-hover:text-primary transition-colors">
-                        {doctor.name}
-                      </h3>
-
-                      <p className="mt-1 text-xs text-muted-foreground truncate">
-                        {doctor.specialty}
-                      </p>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
+                return (
+                  <article
+                    key={doctor.id}
+                    onClick={() => handleDoctorConsultation(doctor.id, isPresent, doctor.name)}
+                    className="group relative cursor-pointer min-w-[78vw] snap-center rounded-2xl p-2.5 transition-all duration-300 hover:shadow-xl sm:min-w-[280px] lg:min-w-0 border border-border/70 bg-muted/60 hover:border-border"
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
                         handleDoctorConsultation(doctor.id, isPresent, doctor.name);
-                      }}
-                      aria-label={
-                        isPresent
-                          ? `Book consultation with ${doctor.name}`
-                          : `${doctor.name} is currently absent`
                       }
-                      className="grid size-9 shrink-0 place-items-center rounded-full border border-border bg-background p-0 text-foreground transition-all duration-200 group-hover:bg-foreground group-hover:text-background group-hover:scale-105 shadow-2xs"
-                    >
-                      <ArrowUpRight size={15} />
-                    </button>
-                  </div>
-                </article>
-              );
-            })
-          )}
+                    }}
+                  >
+                    <div className="doctor-photo relative aspect-[853/1024] overflow-hidden rounded-xl bg-muted">
+                      <img
+                        src={doctor.image}
+                        alt={`${doctor.name}, ${doctor.specialty} specialist`}
+                        width={853}
+                        height={1024}
+                        loading="lazy"
+                        className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-105"
+                      />
+
+                      {/* Presence / Absence Status Badge */}
+                      <div className="absolute top-2.5 left-2.5 z-10 pointer-events-none">
+                        {isPresent ? (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-bold tracking-wider uppercase bg-[#ebfbf3]/95 text-[#008953] border border-[#b8f0d4] shadow-sm backdrop-blur-md">
+                            <span className="size-2 rounded-full bg-[#00b069]"></span>
+                            Present
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-bold tracking-wider uppercase bg-rose-50/95 text-rose-700 border border-rose-300 shadow-sm backdrop-blur-md">
+                            <span className="size-2 rounded-full bg-rose-500"></span>
+                            Absent
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Bottom Hover Action Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex items-end p-3">
+                        <span className="text-[11px] font-semibold text-white px-2.5 py-1 rounded-full backdrop-blur-sm bg-black/50">
+                          {isPresent ? "Book Consultation" : "Doctor Absent Today"}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 pt-3.5 px-1">
+                      <div className="min-w-0">
+                        <h3 className="truncate font-semibold text-foreground group-hover:text-primary transition-colors">
+                          {doctor.name}
+                        </h3>
+
+                        <p className="mt-1 text-xs text-muted-foreground truncate">
+                          {doctor.specialty}
+                        </p>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenDoctorDetails(doctor);
+                        }}
+                        aria-label={`View detailed profile and credentials of ${doctor.name}`}
+                        title="View Doctor Details"
+                        className="grid size-9 shrink-0 place-items-center rounded-full border border-border bg-background p-0 text-foreground transition-all duration-200 hover:bg-[#008953] hover:text-white hover:border-[#008953] group-hover:scale-105 shadow-2xs cursor-pointer"
+                      >
+                        <ArrowUpRight size={15} />
+                      </button>
+                    </div>
+                  </article>
+                );
+              })}
         </div>
       </div>
 
@@ -492,6 +638,16 @@ export function Specialists() {
         }}
         isClinicOpen={isClinicOpen}
         {...(selectedSpecialistId ? { specialistId: selectedSpecialistId } : {})}
+      />
+
+      <DoctorDetailDialog
+        open={detailDialogOpen}
+        onOpenChange={setDetailDialogOpen}
+        doctor={detailDoctor}
+        detailInfo={detailDoctor ? getDoctorDetail(detailDoctor.name) : null}
+        onBookAppointment={(docId, isAvail, docName) => {
+          handleDoctorConsultation(docId, isAvail, docName);
+        }}
       />
     </section>
   );
@@ -510,10 +666,9 @@ export function Testimonials() {
         {testimonials.map((item) => (
           <article
             key={item.name}
-            className={`relative flex min-h-72 flex-col overflow-hidden rounded-lg p-6 transition duration-300 hover:-translate-y-1 ${item.feature
-                ? "bg-footer text-hero-foreground"
-                : "bg-secondary"
-              }`}
+            className={`relative flex min-h-72 flex-col overflow-hidden rounded-lg p-6 transition duration-300 hover:-translate-y-1 ${
+              item.feature ? "bg-footer text-hero-foreground" : "bg-secondary"
+            }`}
           >
             {item.feature && (
               <>
@@ -541,15 +696,11 @@ export function Testimonials() {
             <div className="relative z-10 mt-auto">
               <Quote
                 size={25}
-                className={
-                  item.feature ? "text-primary" : "text-foreground"
-                }
+                className={item.feature ? "text-primary" : "text-foreground"}
                 fill="currentColor"
               />
 
-              <p className="mt-4 text-sm font-medium leading-6">
-                {item.quote}
-              </p>
+              <p className="mt-4 text-sm font-medium leading-6">{item.quote}</p>
             </div>
           </article>
         ))}

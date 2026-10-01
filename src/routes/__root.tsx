@@ -51,9 +51,14 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         <p className="mt-2 text-sm text-muted-foreground">
           Something went wrong on our end. You can try refreshing or head back home.
         </p>
-        <pre id="root-error-trace" className="mt-4 p-3 bg-red-50 border border-red-200 text-red-800 text-xs text-left overflow-auto max-w-xl rounded-lg whitespace-pre-wrap font-mono">
-          {error?.stack || error?.message || String(error)}
-        </pre>
+        {import.meta.env.DEV && (
+          <pre
+            id="root-error-trace"
+            className="mt-4 p-3 bg-red-50 border border-red-200 text-red-800 text-xs text-left overflow-auto max-w-xl rounded-lg whitespace-pre-wrap font-mono"
+          >
+            {error?.stack || error?.message || String(error)}
+          </pre>
+        )}
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
             onClick={() => {
@@ -81,11 +86,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Denpe Dental" },
+      { title: "Dr. Divya's Family Dental Clinic" },
       { name: "description", content: "Modern dental care for healthier, more confident smiles." },
-      { name: "author", content: "Denpe Dental" },
-      { property: "og:title", content: "Denpe Dental" },
-      { property: "og:description", content: "Modern dental care for healthier, more confident smiles." },
+      { name: "author", content: "Dr. Divya's Family Dental Clinic" },
+      { property: "og:title", content: "Dr. Divya's Family Dental Clinic" },
+      {
+        property: "og:description",
+        content: "Modern dental care for healthier, more confident smiles.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
@@ -97,7 +105,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap",
+      },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
