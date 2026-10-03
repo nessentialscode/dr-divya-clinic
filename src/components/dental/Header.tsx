@@ -18,7 +18,7 @@ export function Brand({ inverse = false }: { inverse?: boolean }) {
   return (
     <Link
       to="/"
-      className="flex shrink-0 items-center gap-3.5 text-inherit transition-opacity hover:opacity-90 sm:gap-4"
+      className="flex shrink-0 items-center gap-2.5 sm:gap-4 text-inherit transition-opacity hover:opacity-90 min-w-0"
       aria-label="Dr. Divya's Ayankalam Dental Clinic"
     >
       <img
@@ -26,18 +26,18 @@ export function Brand({ inverse = false }: { inverse?: boolean }) {
         alt="Dr. Divya's Ayankalam Dental Clinic Logo"
         width={58}
         height={58}
-        className="h-11 w-11 sm:h-[54px] sm:w-[54px] object-contain shrink-0 drop-shadow-sm rounded-full"
+        className="h-10 w-10 sm:h-[54px] sm:w-[54px] object-contain shrink-0 drop-shadow-sm rounded-full"
       />
 
-      <div className="flex flex-col justify-center leading-none">
+      <div className="flex flex-col justify-center leading-none min-w-0">
         <span
-          className={`text-xl font-extrabold uppercase tracking-[0.08em] sm:text-[25px] ${inverse ? "text-white" : "text-foreground"}`}
+          className={`text-lg font-extrabold uppercase tracking-[0.06em] sm:text-[25px] sm:tracking-[0.08em] whitespace-nowrap ${inverse ? "text-white" : "text-foreground"}`}
           style={{ textShadow: "1px 1px 1px rgba(0,0,0,0.35)" }}
         >
           Dr. Divya's
         </span>
 
-        <span className="mt-1.5 text-[11px] font-bold uppercase tracking-[0.22em] text-[#dbb335] sm:text-[14px]">
+        <span className="mt-1 sm:mt-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[#dbb335] sm:text-[14px] sm:tracking-[0.22em] whitespace-nowrap">
           Ayankalam Dental Clinic
         </span>
       </div>
@@ -82,11 +82,11 @@ export function Header({ mode = "absolute" }: { mode?: "absolute" | "sticky" }) 
           })}
         </nav>
 
-        {/* Actions (Desktop & Mobile) */}
-        <div className="flex items-center gap-3 sm:gap-4">
+        {/* Actions: Desktop retains Contact Us pill; Mobile hides it beside logo & title */}
+        <div className="flex items-center gap-3 sm:gap-4 shrink-0">
           <AppointmentTrigger
             variant="ghost"
-            className="h-auto rounded-full bg-white px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-semibold text-neutral-900 shadow-md hover:bg-white/95 active:scale-95 transition-all inline-flex items-center gap-2 border-0"
+            className="hidden md:inline-flex h-auto rounded-full bg-white px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-semibold text-neutral-900 shadow-md hover:bg-white/95 active:scale-95 transition-all items-center gap-2 border-0"
           >
             <span className="flex size-5 sm:size-6 items-center justify-center rounded-full bg-black text-white shrink-0">
               <span className="text-xs sm:text-sm font-bold leading-none select-none">↗</span>
@@ -94,10 +94,10 @@ export function Header({ mode = "absolute" }: { mode?: "absolute" | "sticky" }) 
             <span className="font-semibold tracking-tight text-neutral-900">Contact Us</span>
           </AppointmentTrigger>
 
-          {/* Clean Hamburger for mobile (matching Image 2) */}
+          {/* Clean Hamburger for mobile */}
           <button
             type="button"
-            className="flex items-center justify-center p-1.5 text-white hover:text-white/85 transition-colors md:hidden focus:outline-none"
+            className="flex items-center justify-center p-2 text-white hover:text-white/85 transition-colors md:hidden focus:outline-none"
             aria-label={open ? "Close navigation" : "Open navigation"}
             aria-expanded={open}
             onClick={() => setOpen((value) => !value)}
@@ -122,6 +122,15 @@ export function Header({ mode = "absolute" }: { mode?: "absolute" | "sticky" }) 
               {label}
             </a>
           ))}
+          <div className="mt-2 border-t border-white/10 pt-3 px-1">
+            <AppointmentTrigger
+              variant="default"
+              onClick={() => setOpen(false)}
+              className="w-full justify-center rounded-xl bg-white py-3 text-sm font-bold text-neutral-900 shadow-md hover:bg-white/95"
+            >
+              Contact Us / Book Appointment
+            </AppointmentTrigger>
+          </div>
         </nav>
       )}
     </header>

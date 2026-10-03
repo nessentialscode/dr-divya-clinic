@@ -31,7 +31,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <main className="overflow-hidden">
+    <main className="w-full max-w-full overflow-hidden overflow-x-clip">
       <Header />
       <Hero />
       <AboutSection />
