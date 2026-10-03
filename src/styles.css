@@ -215,12 +215,11 @@
   background:
     linear-gradient(
       90deg,
-      rgba(8, 14, 18, 0.88) 0%,
-      rgba(8, 14, 18, 0.65) 36%,
-      rgba(8, 14, 18, 0.22) 58%,
-      transparent 75%
-    ),
-    linear-gradient(0deg, rgba(8, 14, 18, 0.45) 0%, transparent 35%);
+      rgba(255, 255, 255, 0.72) 0%,
+      rgba(255, 255, 255, 0.42) 28%,
+      rgba(255, 255, 255, 0.12) 46%,
+      transparent 65%
+    );
 }
 
 .hide-scrollbar {
@@ -235,10 +234,10 @@
     background:
       linear-gradient(
         0deg,
-        rgba(8, 14, 18, 0.96) 0%,
-        rgba(8, 14, 18, 0.86) 42%,
-        rgba(8, 14, 18, 0.3) 58%,
-        transparent 75%
+        rgba(186, 224, 242, 0.65) 0%,
+        rgba(186, 224, 242, 0.38) 35%,
+        rgba(186, 224, 242, 0.08) 55%,
+        transparent 70%
       );
   }
 }

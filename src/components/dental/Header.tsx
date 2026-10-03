@@ -31,8 +31,8 @@ export function Brand({ inverse = false }: { inverse?: boolean }) {
 
       <div className="flex flex-col justify-center leading-none min-w-0">
         <span
-          className={`text-lg font-extrabold uppercase tracking-[0.06em] sm:text-[25px] sm:tracking-[0.08em] whitespace-nowrap ${inverse ? "text-white" : "text-foreground"}`}
-          style={{ textShadow: "1px 1px 1px rgba(0,0,0,0.35)" }}
+          className={`text-lg font-extrabold uppercase tracking-[0.06em] sm:text-[25px] sm:tracking-[0.08em] whitespace-nowrap ${inverse ? "text-white" : "text-[#0c364e]"}`}
+          style={inverse ? { textShadow: "1px 1px 1px rgba(0,0,0,0.35)" } : undefined}
         >
           Dr. Divya's
         </span>
@@ -50,13 +50,13 @@ export function Header({ mode = "absolute" }: { mode?: "absolute" | "sticky" }) 
 
   const headerContainerClass =
     mode === "sticky"
-      ? "sticky top-0 z-40 bg-footer/90 text-hero-foreground border-b border-white/10 backdrop-blur-md shadow-md transition-all duration-300"
-      : "absolute inset-x-0 top-0 z-30 text-hero-foreground";
+      ? "sticky top-0 z-40 bg-white/95 text-[#0c364e] border-b border-black/5 backdrop-blur-md shadow-sm transition-all duration-300"
+      : "absolute inset-x-0 top-0 z-30 text-[#0c364e] bg-gradient-to-b from-white/35 via-white/10 to-transparent";
 
   return (
     <header className={headerContainerClass}>
       <div className="site-container flex h-20 items-center justify-between sm:h-24">
-        <Brand inverse />
+        <Brand />
 
         {/* Center Desktop Navigation */}
         <nav
@@ -70,12 +70,12 @@ export function Header({ mode = "absolute" }: { mode?: "absolute" | "sticky" }) 
                 key={href}
                 href={href}
                 className={`relative py-1.5 transition-colors ${
-                  isHome ? "text-white font-medium" : "text-white/80 hover:text-white"
+                  isHome ? "text-[#0c364e] font-semibold" : "text-[#0c364e]/80 hover:text-[#0c364e]"
                 }`}
               >
                 {label}
                 {isHome && (
-                  <span className="absolute bottom-0 left-0 right-0 h-[2.5px] rounded-full bg-[#dbb335]" />
+                  <span className="absolute bottom-0 left-0 right-0 h-[2.5px] rounded-full bg-[#0c364e]" />
                 )}
               </a>
             );
@@ -86,18 +86,18 @@ export function Header({ mode = "absolute" }: { mode?: "absolute" | "sticky" }) 
         <div className="flex items-center gap-3 sm:gap-4 shrink-0">
           <AppointmentTrigger
             variant="ghost"
-            className="hidden md:inline-flex h-auto rounded-full bg-white px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-semibold text-neutral-900 shadow-md hover:bg-white/95 active:scale-95 transition-all items-center gap-2 border-0"
+            className="hidden md:inline-flex h-auto rounded-full bg-[#0c364e] hover:bg-[#08283b] px-4 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-semibold text-white shadow-md active:scale-95 transition-all items-center gap-2 border-0 cursor-pointer"
           >
-            <span className="flex size-5 sm:size-6 items-center justify-center rounded-full bg-black text-white shrink-0">
+            <span className="flex size-5 sm:size-6 items-center justify-center rounded-full bg-white text-[#0c364e] shrink-0">
               <span className="text-xs sm:text-sm font-bold leading-none select-none">↗</span>
             </span>
-            <span className="font-semibold tracking-tight text-neutral-900">Contact Us</span>
+            <span className="font-semibold tracking-tight text-white">Contact Us</span>
           </AppointmentTrigger>
 
           {/* Clean Hamburger for mobile */}
           <button
             type="button"
-            className="flex items-center justify-center p-2 text-white hover:text-white/85 transition-colors md:hidden focus:outline-none"
+            className="flex items-center justify-center p-2 text-[#0c364e] hover:text-[#0c364e]/80 transition-colors md:hidden focus:outline-none cursor-pointer"
             aria-label={open ? "Close navigation" : "Open navigation"}
             aria-expanded={open}
             onClick={() => setOpen((value) => !value)}
@@ -109,7 +109,7 @@ export function Header({ mode = "absolute" }: { mode?: "absolute" | "sticky" }) 
 
       {open && (
         <nav
-          className="mx-4 mt-2 rounded-xl border border-white/10 bg-footer/95 p-4 shadow-2xl backdrop-blur-xl md:hidden animate-in fade-in slide-in-from-top-3 duration-200"
+          className="mx-4 mt-2 rounded-xl border border-black/10 bg-white/95 p-4 shadow-2xl backdrop-blur-xl md:hidden animate-in fade-in slide-in-from-top-3 duration-200"
           aria-label="Mobile navigation"
         >
           {links.map(([label, href]) => (
@@ -117,16 +117,16 @@ export function Header({ mode = "absolute" }: { mode?: "absolute" | "sticky" }) 
               key={href}
               href={href}
               onClick={() => setOpen(false)}
-              className="block rounded-lg px-4 py-3 text-base font-medium text-white/90 hover:bg-white/10 hover:text-white transition-colors"
+              className="block rounded-lg px-4 py-3 text-base font-medium text-[#0c364e] hover:bg-[#0c364e]/5 transition-colors"
             >
               {label}
             </a>
           ))}
-          <div className="mt-2 border-t border-white/10 pt-3 px-1">
+          <div className="mt-2 border-t border-black/10 pt-3 px-1">
             <AppointmentTrigger
               variant="default"
               onClick={() => setOpen(false)}
-              className="w-full justify-center rounded-xl bg-white py-3 text-sm font-bold text-neutral-900 shadow-md hover:bg-white/95"
+              className="w-full justify-center rounded-xl bg-[#0c364e] py-3 text-sm font-bold text-white shadow-md hover:bg-[#08283b]"
             >
               Contact Us / Book Appointment
             </AppointmentTrigger>
