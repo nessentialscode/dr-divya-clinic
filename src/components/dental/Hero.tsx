@@ -23,11 +23,6 @@ export function Hero() {
       {/* Main Content Area */}
       <div className="site-container relative z-10 flex min-h-[100dvh] flex-col justify-end pb-12 pt-24 sm:pb-16 md:min-h-screen md:justify-center md:pb-0 md:pt-16 lg:pt-20">
         <div className="max-w-xl md:max-w-2xl">
-          {/* Eyebrow / Tagline */}
-          <p className="text-[11px] sm:text-xs md:text-sm font-semibold uppercase tracking-[0.2em] text-[#12435e] mb-3 sm:mb-4">
-            Complete dental care for the whole family
-          </p>
-
           {/* Headline matching Images 1 & 2 */}
           <h1 className="text-[clamp(3.5rem,13vw,7.4rem)] font-extrabold tracking-tight text-[#0c364e] leading-[0.85] sm:leading-[0.82] md:leading-[0.8]">
             Healthy
