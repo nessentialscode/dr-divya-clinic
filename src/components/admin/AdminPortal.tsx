@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
-import { normalizeDoctorDisplayName } from "@/lib/utils";
+import { getDoctorSortOrder, normalizeDoctorDisplayName } from "@/lib/utils";
 import { AdminHeader } from "./AdminHeader";
 import { ClinicAvailability, type ClinicBranch } from "./ClinicAvailability";
 import { DoctorAvailability, type DoctorRecord } from "./DoctorAvailability";
@@ -74,7 +74,10 @@ export function AdminPortal({ userEmail, onSignOut }: AdminPortalProps) {
       }
 
       if (doctorsRes.data) {
-        setDoctors(doctorsRes.data as DoctorRecord[]);
+        const sortedDoctors = [...(doctorsRes.data as DoctorRecord[])].sort(
+          (a, b) => getDoctorSortOrder(a.name) - getDoctorSortOrder(b.name)
+        );
+        setDoctors(sortedDoctors);
       }
 
       if (servicesRes.data) {

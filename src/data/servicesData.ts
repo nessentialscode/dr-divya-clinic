@@ -1322,7 +1322,7 @@ export const servicesData: ServiceDetail[] = [
     recommendedSpecialists: [
       {
         id: "7f053965-dbd0-4355-89f4-b2586b4bb554",
-        name: "Dr. Ratheesh M.S",
+        name: "Dr. Ayisha",
         role: "Consultant Pedodontist",
       },
       {

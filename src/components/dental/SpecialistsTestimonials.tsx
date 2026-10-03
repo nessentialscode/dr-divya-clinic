@@ -24,22 +24,24 @@ import specialistDrAslif from "@/assets/specialist-dr-aslif.jpg";
 import specialistDrHaris from "@/assets/specialist-dr-haris.jpg";
 import specialistDrNidhash from "@/assets/specialist-dr-nidhash.jpg";
 import specialistDrFathima from "@/assets/specialist-dr-fathima.jpg";
+import specialistDrAyisha from "@/assets/specialist-dr-ayisha.jpg";
+import specialistDrRoshan from "@/assets/specialist-dr-roshan.jpg";
 
 import { supabase } from "@/lib/supabase";
-import { normalizeDoctorDisplayName } from "@/lib/utils";
+import { getDoctorSortOrder, normalizeDoctorDisplayName } from "@/lib/utils";
 import { AppointmentDialog } from "./AppointmentDialog";
 import { DoctorDetailDialog, DoctorDetailInfo } from "./DoctorDetailDialog";
 
 const orderedDoctorOrder = [
   "Dr. Divya Lijeesh",
   "Dr. Lijeesh Kadambil",
-  "Dr. Rathish T.K",
-  "Dr. Nidhash Saddik",
-  "Dr. Fathima Roosa Fidha TP",
+  "Dr. Fathima Roosa Fidha",
+  "Dr. Ayisha",
+  "Dr. Rathish TK",
+  "Dr. Nidhash Siddik",
   "Dr. Roshan",
-  "Dr. Ratheesh M.S",
-  "Dr. Mohamed Aslif",
-  "Dr. Mohamed Haris P.M",
+  "Dr. Mohammed Aslif",
+  "Dr. Mohammed Haris PM",
 ];
 
 type ClinicDoctor = {
@@ -85,7 +87,7 @@ const doctorDetailsData: Record<string, DoctorDetailInfo> = {
     ],
   },
   rathish: {
-    name: "Dr. Ratheesh TK",
+    name: "Dr. Rathish TK",
     designation: "Oral & Maxillofacial Surgeon",
     credentials: "MDS • Oral & Maxillofacial Surgeon",
     experience: "Advanced Surgical Specialist",
@@ -98,11 +100,11 @@ const doctorDetailsData: Record<string, DoctorDetailInfo> = {
     ],
   },
   nidhash: {
-    name: "Dr. Nidhash Saddik",
+    name: "Dr. Nidhash Siddik",
     designation: "Consultant Endodontist",
     credentials: "BDS, MDS • Consultant Endodontist",
     experience: "Precision Endodontic Specialist",
-    bio: "Dr. Nidhash Saddik is an expert dental surgeon and consultant endodontist specialising in painless root canal treatments, rotary endodontics, dental restorations, and advanced conservative dentistry. With meticulous attention to detail and modern clinical techniques, he ensures precision care, patient comfort, and long-term tooth preservation.",
+    bio: "Dr. Nidhash Siddik is an expert dental surgeon and consultant endodontist specialising in painless root canal treatments, rotary endodontics, dental restorations, and advanced conservative dentistry. With meticulous attention to detail and modern clinical techniques, he ensures precision care, patient comfort, and long-term tooth preservation.",
     highlights: [
       "Microscopic & Rotary Endodontics",
       "Painless Single-Sitting Root Canal",
@@ -123,12 +125,12 @@ const doctorDetailsData: Record<string, DoctorDetailInfo> = {
       "Digital Treatment Simulation",
     ],
   },
-  ratheeshms: {
-    name: "Dr. Ratheesh M.S",
+  ayisha: {
+    name: "Dr. Ayisha",
     designation: "Consultant Pedodontist",
     credentials: "MDS • Pediatric & Preventive Dentistry",
     experience: "Child Dental Care Specialist",
-    bio: "Dr. Ratheesh M.S is a specialist pediatric dentist (pedodontist) focused on delivering compassionate, gentle, and child-friendly dental care. His expertise covers preventative pediatric dentistry, early interceptive orthodontics, pulpectomies, and habit-breaking appliances, helping children build positive lifelong dental habits.",
+    bio: "Dr. Ayisha is a specialist pediatric dentist (pedodontist) focused on delivering compassionate, gentle, and child-friendly dental care. Her expertise covers preventative pediatric dentistry, early interceptive orthodontics, pulpectomies, and habit-breaking appliances, helping children build positive lifelong dental habits.",
     highlights: [
       "Child-Friendly Preventive Care",
       "Pediatric Pulpectomies & Crowns",
@@ -150,11 +152,11 @@ const doctorDetailsData: Record<string, DoctorDetailInfo> = {
     ],
   },
   haris: {
-    name: "Dr. Mohamed Haris PM",
+    name: "Dr. Mohammed Haris PM",
     designation: "Consultant Periodontist",
     credentials: "MDS • Consultant Periodontist",
     experience: "Advanced Periodontal Specialist",
-    bio: "Dr. Mohamed Haris PM is an experienced Periodontist specialising in the diagnosis, prevention, and management of gum and periodontal conditions. His clinical expertise includes flap surgery, root planing, and advanced periodontal surgical and preventive treatments, with a strong focus on preserving gum health and supporting long-term oral health. His meticulous, evidence-based approach ensures comprehensive and personalised periodontal care.",
+    bio: "Dr. Mohammed Haris PM is an experienced Periodontist specialising in the diagnosis, prevention, and management of gum and periodontal conditions. His clinical expertise includes flap surgery, root planing, and advanced periodontal surgical and preventive treatments, with a strong focus on preserving gum health and supporting long-term oral health. His meticulous, evidence-based approach ensures comprehensive and personalised periodontal care.",
     highlights: [
       "Periodontal Flap Surgery & Regeneration",
       "Ultrasonic Root Planing & Deep Scaling",
@@ -163,11 +165,11 @@ const doctorDetailsData: Record<string, DoctorDetailInfo> = {
     ],
   },
   fathima: {
-    name: "Dr. Fathima Roosa Fidha TP",
+    name: "Dr. Fathima Roosa Fidha",
     designation: "Resident Dental Surgeon",
     credentials: "BDS • Resident Dental Surgeon",
     experience: "Clinical Dental Surgeon",
-    bio: "Dr. Fathima Roosa Fidha TP is a dedicated and compassionate dental surgeon committed to providing comprehensive, patient-centred dental care. With expertise spanning preventive dentistry, restorative procedures, aesthetic smile enhancements, and gentle routine treatments, she ensures a comfortable and reassuring dental experience for all patients.",
+    bio: "Dr. Fathima Roosa Fidha is a dedicated and compassionate dental surgeon committed to providing comprehensive, patient-centred dental care. With expertise spanning preventive dentistry, restorative procedures, aesthetic smile enhancements, and gentle routine treatments, she ensures a comfortable and reassuring dental experience for all patients.",
     highlights: [
       "Preventive & Conservative Dentistry",
       "Aesthetic Dental Restorations",
@@ -185,14 +187,19 @@ function getDoctorDetail(doctorName: string): DoctorDetailInfo | null {
   const clean = cleanDoctorKey(doctorName);
   if (clean.includes("divya")) return doctorDetailsData["divya"] ?? null;
   if (clean.includes("lijeesh")) return doctorDetailsData["lijeesh"] ?? null;
-  if (clean.includes("ratheeshms") || (clean.includes("ratheesh") && clean.includes("ms")))
-    return doctorDetailsData["ratheeshms"] ?? null;
-  if (clean.includes("rathish") || clean.includes("ratheesh"))
+  if (clean.includes("fathima") || clean.includes("roosa") || clean.includes("fidha"))
+    return doctorDetailsData["fathima"] ?? null;
+  if (
+    clean.includes("ayisha") ||
+    clean.includes("aisha") ||
+    clean.includes("ratheeshms") ||
+    (clean.includes("ratheesh") && !clean.includes("tk"))
+  )
+    return doctorDetailsData["ayisha"] ?? null;
+  if (clean.includes("rathish") || clean.includes("ratheesh") || clean.includes("tk"))
     return doctorDetailsData["rathish"] ?? null;
   if (clean.includes("nidhash") || clean.includes("anas"))
     return doctorDetailsData["nidhash"] ?? null;
-  if (clean.includes("fathima") || clean.includes("roosa") || clean.includes("fidha"))
-    return doctorDetailsData["fathima"] ?? null;
   if (clean.includes("roshan")) return doctorDetailsData["roshan"] ?? null;
   if (clean.includes("aslif")) return doctorDetailsData["aslif"] ?? null;
   if (clean.includes("haris")) return doctorDetailsData["haris"] ?? null;
@@ -202,18 +209,26 @@ function getDoctorDetail(doctorName: string): DoctorDetailInfo | null {
 const doctorPhotos: Record<string, string> = {
   "Dr. Divya Lijeesh": specialistDrDivya, // Card 1: Dr. Divya Lijeesh
   "Dr. Divya Nath": specialistDrDivya,
-  "Dr. Lijeesh Kadambil": specialistDrLijeesh, // Card 2: Dr. Lijeesh Kadambil and his photo
+  "Dr. Lijeesh Kadambil": specialistDrLijeesh, // Card 2: Dr. Lijeesh Kadambil
   "Dr. Lijeesh": specialistDrLijeesh,
-  "Dr. Rathish T.K": specialistDrRathish, // Card 3: Dr. Rathish T.K
-  "Dr. Nidhash Saddik": specialistDrNidhash, // Card 4: Dr. Nidhash Saddik
-  "Dr. Anas": specialistDrNidhash,
+  "Dr. Fathima Roosa Fidha": specialistDrFathima, // Card 3: Dr. Fathima Roosa Fidha
   "Dr. Fathima Roosa Fidha TP": specialistDrFathima,
-  "Dr. Fathima Roosa Fidha": specialistDrFathima,
   "Dr. Fathima": specialistDrFathima,
-  "Dr. Roshan": specialist4,
-  "Dr. Ratheesh M.S": specialist2,
-  "Dr. Mohamed Aslif": specialistDrAslif, // Card 7: Dr. Mohamed Aslif
-  "Dr. Mohamed Haris P.M": specialistDrHaris, // Card 8: Dr. Mohamed Haris P.M
+  "Dr. Ayisha": specialistDrAyisha, // Card 4: Dr. Ayisha
+  "Dr. Aisha": specialistDrAyisha,
+  "Dr. Ratheesh M.S": specialistDrAyisha,
+  "Dr. Rathish TK": specialistDrRathish, // Card 5: Dr. Rathish TK
+  "Dr. Rathish T.K": specialistDrRathish,
+  "Dr. Rathish": specialistDrRathish,
+  "Dr. Nidhash Siddik": specialistDrNidhash, // Card 6: Dr. Nidhash Siddik
+  "Dr. Nidhash Saddik": specialistDrNidhash,
+  "Dr. Nidhash": specialistDrNidhash,
+  "Dr. Anas": specialistDrNidhash,
+  "Dr. Roshan": specialistDrRoshan, // Card 7: Dr. Roshan
+  "Dr. Mohammed Aslif": specialistDrAslif, // Card 8: Dr. Mohammed Aslif
+  "Dr. Mohamed Aslif": specialistDrAslif,
+  "Dr. Mohammed Haris PM": specialistDrHaris, // Card 9: Dr. Mohammed Haris PM
+  "Dr. Mohamed Haris P.M": specialistDrHaris,
 };
 
 const fallbackPhotos: readonly string[] = [specialist3, specialist4, specialist2, specialist1];
@@ -298,45 +313,33 @@ export function Specialists() {
         if (!hasFathima) {
           rawList.push({
             id: "a3b89012-789a-4bc3-9de1-23456789abcd",
-            name: "Dr. Fathima Roosa Fidha TP",
+            name: "Dr. Fathima Roosa Fidha",
             specialty: "Resident Dental Surgeon",
             is_available: true,
           });
         }
+        const hasAyisha = rawList.some(
+          (d) =>
+            cleanDoctorKey(d.name).includes("ayisha") ||
+            cleanDoctorKey(d.name).includes("aisha") ||
+            (cleanDoctorKey(d.name).includes("ratheesh") && cleanDoctorKey(d.name).includes("ms")),
+        );
+        if (!hasAyisha) {
+          rawList.push({
+            id: "b4c90123-890b-5cd4-aef2-34567890bcde",
+            name: "Dr. Ayisha",
+            specialty: "Consultant Pedodontist",
+            is_available: true,
+          });
+        }
 
-        // Sort according to orderedDoctorOrder
+        // Sort strictly according to orderedDoctorOrder:
+        // Card 1: Dr. Divya Lijeesh
+        // Card 2: Dr. Lijeesh Kadambil
+        // Card 3: Dr. Fathima Roosa Fidha
+        // Card 4: Dr. Ayisha
         const sorted = rawList.sort((a, b) => {
-          const cleanA = cleanDoctorKey(a.name);
-          const cleanB = cleanDoctorKey(b.name);
-          const indexA = orderedDoctorOrder.findIndex((name) => {
-            const cleanTarget = cleanDoctorKey(name);
-            return (
-              cleanA.includes(cleanTarget) ||
-              cleanTarget.includes(cleanA) ||
-              (cleanA.includes("divya") && cleanTarget.includes("divya")) ||
-              (cleanA.includes("lijeesh") && cleanTarget.includes("lijeesh")) ||
-              ((cleanA.includes("anas") || cleanA.includes("nidhash")) &&
-                cleanTarget.includes("nidhash")) ||
-              ((cleanA.includes("fathima") || cleanA.includes("roosa") || cleanA.includes("fidha")) &&
-                cleanTarget.includes("fathima"))
-            );
-          });
-          const indexB = orderedDoctorOrder.findIndex((name) => {
-            const cleanTarget = cleanDoctorKey(name);
-            return (
-              cleanB.includes(cleanTarget) ||
-              cleanTarget.includes(cleanB) ||
-              (cleanB.includes("divya") && cleanTarget.includes("divya")) ||
-              (cleanB.includes("lijeesh") && cleanTarget.includes("lijeesh")) ||
-              ((cleanB.includes("anas") || cleanB.includes("nidhash")) &&
-                cleanTarget.includes("nidhash")) ||
-              ((cleanB.includes("fathima") || cleanB.includes("roosa") || cleanB.includes("fidha")) &&
-                cleanTarget.includes("fathima"))
-            );
-          });
-          const orderA = indexA === -1 ? 999 : indexA;
-          const orderB = indexB === -1 ? 999 : indexB;
-          return orderA - orderB;
+          return getDoctorSortOrder(a.name) - getDoctorSortOrder(b.name);
         });
 
         const merged: ClinicDoctor[] = sorted.map((item, index) => {
@@ -353,7 +356,9 @@ export function Specialists() {
           const specialty =
             cleanName.includes("lijeesh")
               ? "Chief Dental Surgeon"
-              : item.specialty;
+              : cleanName.includes("ayisha") || cleanName.includes("aisha")
+                ? "Consultant Pedodontist"
+                : item.specialty;
 
           return {
             id: item.id,
@@ -681,11 +686,7 @@ export function Specialists() {
                     }}
                   >
                     <div
-                      className={`doctor-photo relative aspect-[853/1024] overflow-hidden rounded-xl ${
-                        doctor.image === specialistDrFathima || doctor.image === specialistDrNidhash
-                          ? "bg-[#9ea6af]"
-                          : "bg-muted"
-                      }`}
+                      className="doctor-photo relative aspect-[853/1024] overflow-hidden rounded-xl bg-[#9ea6af]"
                     >
                       <img
                         src={doctor.image}

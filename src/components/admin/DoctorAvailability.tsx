@@ -1,6 +1,6 @@
 import { Loader2, Stethoscope } from "lucide-react";
 import { useState } from "react";
-import { normalizeDoctorDisplayName } from "@/lib/utils";
+import { getDoctorSortOrder, normalizeDoctorDisplayName } from "@/lib/utils";
 
 export interface DoctorRecord {
   id: string;
@@ -22,6 +22,10 @@ export function DoctorAvailability({
   loading = false,
 }: DoctorAvailabilityProps) {
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+
+  const sortedDoctors = [...doctors].sort((a, b) => {
+    return getDoctorSortOrder(a.name) - getDoctorSortOrder(b.name);
+  });
 
   const handleToggle = async (id: string, currentAvailable: boolean) => {
     try {
@@ -56,7 +60,7 @@ export function DoctorAvailability({
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-3.5">
-          {doctors.map((doctor) => {
+          {sortedDoctors.map((doctor) => {
             const isUpdating = updatingId === doctor.id;
             const isPresent = doctor.is_available;
 

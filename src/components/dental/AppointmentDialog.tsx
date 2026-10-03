@@ -23,7 +23,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/lib/supabase";
-import { normalizeDoctorDisplayName } from "@/lib/utils";
+import { getDoctorSortOrder, normalizeDoctorDisplayName } from "@/lib/utils";
 
 type Service = {
   id: string;
@@ -202,10 +202,12 @@ export function AppointmentDialog({
         setSpecialistsError("Unable to load specialists right now. Please try again.");
         setSpecialists([]);
       } else if (data) {
-        const loaded = data.map((s) => ({
-          ...s,
-          name: normalizeDoctorDisplayName(s.name),
-        }));
+        const loaded = data
+          .map((s) => ({
+            ...s,
+            name: normalizeDoctorDisplayName(s.name),
+          }))
+          .sort((a, b) => getDoctorSortOrder(a.name) - getDoctorSortOrder(b.name));
         setSpecialists(loaded);
         if (specialistId) {
           const match = loaded.find(
