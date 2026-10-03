@@ -20,9 +20,6 @@ export function Hero() {
         />
       </picture>
 
-      {/* Lighting / gradient overlay for crisp text readability */}
-      <div className="hero-shade absolute inset-0 pointer-events-none" />
-
       {/* Main Content Area */}
       <div className="site-container relative z-10 flex min-h-[100dvh] flex-col justify-end pb-12 pt-24 sm:pb-16 md:min-h-screen md:justify-center md:pb-0 md:pt-16 lg:pt-20">
         <div className="max-w-xl md:max-w-2xl">
