@@ -31,14 +31,25 @@ export function Brand({ inverse = false }: { inverse?: boolean }) {
 
       <div className="flex flex-col justify-center leading-none min-w-0">
         <span
-          className={`text-lg font-extrabold uppercase tracking-[0.06em] sm:text-[25px] sm:tracking-[0.08em] whitespace-nowrap ${inverse ? "text-white" : "text-[#0c364e]"}`}
+          className={`text-lg font-extrabold uppercase tracking-[0.06em] sm:text-[25px] sm:tracking-[0.08em] whitespace-nowrap ${
+            inverse
+              ? "text-white"
+              : "text-white sm:text-[#0c364e] drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)] sm:drop-shadow-none"
+          }`}
           style={inverse ? { textShadow: "1px 1px 1px rgba(0,0,0,0.35)" } : undefined}
         >
           Dr. Divya's
         </span>
 
-        <span className="mt-1 sm:mt-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[#dbb335] sm:text-[14px] sm:tracking-[0.22em] whitespace-nowrap">
-          Ayankalam Dental Clinic
+        <span className="mt-1 sm:mt-1.5 text-[10px] font-bold uppercase tracking-[0.16em] sm:text-[14px] sm:tracking-[0.22em] whitespace-nowrap">
+          {inverse ? (
+            <span className="text-[#dbb335]">Ayankalam Dental Clinic</span>
+          ) : (
+            <>
+              <span className="text-[#dbb335]">Ayankalam </span>
+              <span className="text-[#0c364e] sm:text-[#dbb335]">Dental Clinic</span>
+            </>
+          )}
         </span>
       </div>
     </Link>
