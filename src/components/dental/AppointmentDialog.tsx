@@ -23,7 +23,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/lib/supabase";
-import { getDoctorSortOrder, normalizeDoctorDisplayName } from "@/lib/utils";
+import { getDoctorSortOrder, normalizeDoctorDisplayName, normalizeDoctorSpecialty } from "@/lib/utils";
 
 type Service = {
   id: string;
@@ -206,6 +206,7 @@ export function AppointmentDialog({
           .map((s) => ({
             ...s,
             name: normalizeDoctorDisplayName(s.name),
+            specialty: normalizeDoctorSpecialty(s.name, s.specialty),
           }))
           .sort((a, b) => getDoctorSortOrder(a.name) - getDoctorSortOrder(b.name));
         setSpecialists(loaded);

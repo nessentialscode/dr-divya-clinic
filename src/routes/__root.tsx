@@ -6,6 +6,7 @@ import {
   useRouter,
   HeadContent,
   Scripts,
+  type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
@@ -35,11 +36,11 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
+    reportLovableError(error as any, { boundary: "tanstack_root_error_component" });
   }, [error]);
 
   return (
@@ -56,7 +57,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
             id="root-error-trace"
             className="mt-4 p-3 bg-red-50 border border-red-200 text-red-800 text-xs text-left overflow-auto max-w-xl rounded-lg whitespace-pre-wrap font-mono"
           >
-            {error?.stack || error?.message || String(error)}
+            {(error as any)?.stack || (error as any)?.message || String(error)}
           </pre>
         )}
         <div className="mt-6 flex flex-wrap justify-center gap-2">

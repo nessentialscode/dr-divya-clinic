@@ -8,11 +8,18 @@ import {
   ChevronRight,
   DoorClosed,
   MapPin,
+  Plus,
   Quote,
+  Star,
 } from "lucide-react";
 import { toast } from "sonner";
 
-import patientImage from "@/assets/about-man.jpg";
+import { AddFeedbackDialog } from "./AddFeedbackDialog";
+import type { PatientFeedbackItem } from "@/components/admin/FeedbackModeration";
+
+import reviewDevadathan from "@/assets/review-devadathan.png";
+import reviewSumayya from "@/assets/review-sumayya.png";
+import reviewAdithya from "@/assets/review-adithya.png";
 import specialist1 from "@/assets/specialist-1.jpg";
 import specialist2 from "@/assets/specialist-2.jpg";
 import specialist3 from "@/assets/specialist-3.jpg";
@@ -28,7 +35,7 @@ import specialistDrAyisha from "@/assets/specialist-dr-ayisha.jpg";
 import specialistDrRoshan from "@/assets/specialist-dr-roshan.jpg";
 
 import { supabase } from "@/lib/supabase";
-import { getDoctorSortOrder, normalizeDoctorDisplayName } from "@/lib/utils";
+import { getDoctorSortOrder, normalizeDoctorDisplayName, normalizeDoctorSpecialty } from "@/lib/utils";
 import { AppointmentDialog } from "./AppointmentDialog";
 import { DoctorDetailDialog, DoctorDetailInfo } from "./DoctorDetailDialog";
 
@@ -127,15 +134,15 @@ const doctorDetailsData: Record<string, DoctorDetailInfo> = {
   },
   ayisha: {
     name: "Dr. Ayisha",
-    designation: "Consultant Pedodontist",
-    credentials: "MDS • Pediatric & Preventive Dentistry",
-    experience: "Child Dental Care Specialist",
-    bio: "Dr. Ayisha is a specialist pediatric dentist (pedodontist) focused on delivering compassionate, gentle, and child-friendly dental care. Her expertise covers preventative pediatric dentistry, early interceptive orthodontics, pulpectomies, and habit-breaking appliances, helping children build positive lifelong dental habits.",
+    designation: "Orthodontist | Invisalign®️ Certified Provider",
+    credentials: "Orthodontist • Invisalign®️ Certified Provider",
+    experience: "Orthodontic & Aligner Specialist",
+    bio: "Dr. Ayisha is a dedicated Orthodontist committed to helping patients achieve healthy, well-aligned, and confident smiles. With a patient-centered approach, she provides personalized orthodontic care for children, teenagers, and adults.\n\nAs an Invisalign®️ Certified Provider, Dr. Ayisha offers modern clear-aligner solutions for patients seeking a discreet and comfortable way to improve tooth alignment and their smile. Each treatment plan is carefully customized based on the patient’s dental needs, facial aesthetics, and treatment goals.\n\nHer areas of orthodontic care include conventional braces, clear/ceramic braces, Invisalign®️ clear aligners, early orthodontic treatment, and comprehensive smile alignment.\n\nAt every stage of treatment, Dr. Ayisha focuses on clear communication, careful treatment planning, and comfortable patient care—helping every patient move towards a healthier and more confident smile.",
     highlights: [
-      "Child-Friendly Preventive Care",
-      "Pediatric Pulpectomies & Crowns",
-      "Space Maintainers & Habit Correctors",
-      "Painless & Anxiety-Free Dentistry",
+      "Invisalign®️ Certified Provider",
+      "Conventional & Clear/Ceramic Braces",
+      "Early Orthodontic Treatment",
+      "Comprehensive Smile Alignment",
     ],
   },
   aslif: {
@@ -167,14 +174,14 @@ const doctorDetailsData: Record<string, DoctorDetailInfo> = {
   fathima: {
     name: "Dr. Fathima Roosa Fidha",
     designation: "Resident Dental Surgeon",
-    credentials: "BDS • Resident Dental Surgeon",
+    credentials: "BDS • Dental Surgeon",
     experience: "Clinical Dental Surgeon",
-    bio: "Dr. Fathima Roosa Fidha is a dedicated and compassionate dental surgeon committed to providing comprehensive, patient-centred dental care. With expertise spanning preventive dentistry, restorative procedures, aesthetic smile enhancements, and gentle routine treatments, she ensures a comfortable and reassuring dental experience for all patients.",
+    bio: "A passionate and dedicated Dental Surgeon with a Bachelor of Dental Surgery (BDS) degree, committed to providing compassionate, patient-centered dental care. With fresh clinical knowledge and a dedicated approach, she is eager to apply her clinical skills and expertise in a professional dental environment.\n\nShe has a strong clinical focus in comprehensive dentistry, preventive oral care, restorative procedures, and patient education. She places high value on clear communication, attention to detail, ethical practice, and creating a comfortable, reassuring experience for every patient.",
     highlights: [
-      "Preventive & Conservative Dentistry",
-      "Aesthetic Dental Restorations",
-      "Gentle & Reassuring Patient Consultations",
-      "Comprehensive Oral Health Maintenance",
+      "Comprehensive Dental Care",
+      "Preventive Oral Care & Hygiene",
+      "Restorative Dental Procedures",
+      "Patient Education & Comfortable Care",
     ],
   },
 };
@@ -187,7 +194,7 @@ function getDoctorDetail(doctorName: string): DoctorDetailInfo | null {
   const clean = cleanDoctorKey(doctorName);
   if (clean.includes("divya")) return doctorDetailsData["divya"] ?? null;
   if (clean.includes("lijeesh")) return doctorDetailsData["lijeesh"] ?? null;
-  if (clean.includes("fathima") || clean.includes("roosa") || clean.includes("fidha"))
+  if (clean.includes("fathima") || clean.includes("roosa") || clean.includes("fidha") || clean.includes("fida"))
     return doctorDetailsData["fathima"] ?? null;
   if (
     clean.includes("ayisha") ||
@@ -214,6 +221,8 @@ const doctorPhotos: Record<string, string> = {
   "Dr. Fathima Roosa Fidha": specialistDrFathima, // Card 3: Dr. Fathima Roosa Fidha
   "Dr. Fathima Roosa Fidha TP": specialistDrFathima,
   "Dr. Fathima": specialistDrFathima,
+  "Dr. Fidha": specialistDrFathima,
+  "Dr. Fida": specialistDrFathima,
   "Dr. Ayisha": specialistDrAyisha, // Card 4: Dr. Ayisha
   "Dr. Aisha": specialistDrAyisha,
   "Dr. Ratheesh M.S": specialistDrAyisha,
@@ -234,22 +243,41 @@ const doctorPhotos: Record<string, string> = {
 const fallbackPhotos: readonly string[] = [specialist3, specialist4, specialist2, specialist1];
 const defaultDoctorPhoto = specialist3;
 
-const testimonials = [
+interface PatientReview {
+  id?: string | undefined;
+  name: string;
+  profile: string;
+  avatar: string;
+  stars: number;
+  title?: string | undefined;
+  review: string;
+  isDynamic?: boolean | undefined;
+}
+
+const testimonials: PatientReview[] = [
   {
-    name: "Marvin McKinney",
-    quote:
-      "I was nervous at first, but Dr. Thompson explained everything clearly and the treatment was completely pain-free.",
-    feature: true,
+    name: "Devadathan K",
+    profile: "1 review • 2 months ago",
+    avatar: reviewDevadathan,
+    stars: 5,
+    review:
+      "I had a wonderful experience at this dental clinic. The doctors and staff are incredibly professional, friendly, and welcoming. The clinic is spotlessly clean and equipped with modern technology. They explained the entire procedure clearly and made sure I was comfortable throughout. Highly recommended for anyone looking for top-notch dental care!",
   },
   {
-    name: "Michael H.",
-    quote:
-      "After struggling for years with missing teeth, I can finally eat and speak comfortably. The team were so professional.",
+    name: "Sumayya Faizal",
+    profile: "1 review • 2 months ago",
+    avatar: reviewSumayya,
+    stars: 5,
+    review:
+      "Had a wonderful experience at this dental clinic. The doctor and staff were very polite, attentive, and caring. The treatment was provided with great care and perfection. Highly recommended to everyone!",
   },
   {
-    name: "Esther K.",
-    quote:
-      "Absolutely thrilled with my results! Dr. Emma made me feel at ease from the moment I walked in. I finally love my smile in photos!",
+    name: "Adithya Pradeep",
+    profile: "5 reviews · 1 photo • 2 months ago",
+    avatar: reviewAdithya,
+    stars: 5,
+    review:
+      "I visited Dr Divya’s dental clinic for my dental treatment and I'm really impressed. The doctor took time to explain my issue and treatment options. The clinic is clean, well-equipped, and the staff is very courteous. The results are excellent and there was no pain at all. Thank you so much Dr Divya",
   },
 ];
 
@@ -308,7 +336,8 @@ export function Specialists() {
           (d) =>
             cleanDoctorKey(d.name).includes("fathima") ||
             cleanDoctorKey(d.name).includes("roosa") ||
-            cleanDoctorKey(d.name).includes("fidha"),
+            cleanDoctorKey(d.name).includes("fidha") ||
+            cleanDoctorKey(d.name).includes("fida"),
         );
         if (!hasFathima) {
           rawList.push({
@@ -328,7 +357,7 @@ export function Specialists() {
           rawList.push({
             id: "b4c90123-890b-5cd4-aef2-34567890bcde",
             name: "Dr. Ayisha",
-            specialty: "Consultant Pedodontist",
+            specialty: "Orthodontist | Invisalign®️ Certified Provider",
             is_available: true,
           });
         }
@@ -353,12 +382,7 @@ export function Specialists() {
           const matchedPhoto = photoKey ? doctorPhotos[photoKey] : undefined;
           const fallbackPhoto = fallbackPhotos[index % fallbackPhotos.length] ?? defaultDoctorPhoto;
 
-          const specialty =
-            cleanName.includes("lijeesh")
-              ? "Chief Dental Surgeon"
-              : cleanName.includes("ayisha") || cleanName.includes("aisha")
-                ? "Consultant Pedodontist"
-                : item.specialty;
+          const specialty = normalizeDoctorSpecialty(cleanName, item.specialty);
 
           return {
             id: item.id,
@@ -776,57 +800,219 @@ export function Specialists() {
 }
 
 export function Testimonials() {
+  const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
+  const [approvedDbList, setApprovedDbList] = useState<PatientFeedbackItem[]>([]);
+
+  const loadApprovedFeedback = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("patient_feedback")
+        .select("*")
+        .eq("status", "approved")
+        .order("created_at", { ascending: false });
+
+      if (!error && data) {
+        setApprovedDbList(data as PatientFeedbackItem[]);
+      }
+    } catch (err) {
+      console.error("Could not load approved feedback:", err);
+    }
+  };
+
+  useEffect(() => {
+    loadApprovedFeedback();
+
+    const channel = supabase
+      .channel("public:approved_patient_feedback")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "patient_feedback" },
+        () => {
+          loadApprovedFeedback();
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  // Filter out any db reviews that duplicate the hardcoded Google reviews by name
+  const googleNames = new Set(testimonials.map((t) => t.name.toLowerCase().trim()));
+  const dynamicApproved: PatientReview[] = approvedDbList
+    .filter((item) => !googleNames.has(item.patient_name.toLowerCase().trim()))
+    .map((item) => ({
+      id: item.id,
+      name: item.patient_name,
+      profile: item.treatment ? `${item.treatment} • Verified Patient` : "Verified Patient Review",
+      avatar: "",
+      stars: item.rating || 5,
+      title: item.treatment || undefined,
+      review: item.message,
+      isDynamic: true,
+    }));
+
+  const combinedReviews = [...dynamicApproved, ...testimonials];
+
   return (
-    <section className="site-container py-20 sm:py-28 lg:py-32">
-      <span className="eyebrow">Testimonials</span>
+    <section id="testimonials" className="site-container py-20 sm:py-28 lg:py-32">
+      {/* Top Header Row matching Screenshot 1 */}
+      <div className="flex items-center justify-between gap-4 mb-8">
+        <div className="inline-flex items-center gap-2.5">
+          <span className="size-2 rounded-full bg-sky-500 shrink-0" />
+          <span className="text-base sm:text-lg font-medium tracking-tight text-foreground">
+            Patient Feedback
+          </span>
+        </div>
 
-      <h2 className="section-title mt-5">
-        Happy Smiles, <em>Happy Patients</em>
-      </h2>
+        <button
+          type="button"
+          onClick={() => setFeedbackDialogOpen(true)}
+          className="inline-flex items-center gap-1.5 px-4 py-1.5 sm:px-4.5 sm:py-2 rounded-full border border-border/90 bg-background text-xs sm:text-sm font-semibold text-foreground hover:bg-secondary hover:border-primary/50 transition-all shadow-xs hover:shadow-sm cursor-pointer"
+        >
+          <Plus size={15} className="text-sky-600 dark:text-sky-400 shrink-0" />
+          <span>Add Feedback</span>
+        </button>
+      </div>
 
-      <div className="mt-10 grid gap-4 md:grid-cols-3">
-        {testimonials.map((item) => (
+      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+        <div>
+          <span className="eyebrow">Patient Stories</span>
+          <h2 className="section-title mt-4">
+            Happy Smiles, <em>Happy Patients</em>
+          </h2>
+          <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-xl">
+            Real experiences and genuine reviews shared by our patients. All feedback is verified
+            and approved by our clinic administration.
+          </p>
+        </div>
+
+        {/* Google Reviews Trust Badge */}
+        <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-2xl border border-border bg-card shadow-xs">
+          <div className="flex items-center gap-1.5">
+            <svg className="size-5 shrink-0" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
+              <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.98 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+            </svg>
+            <span className="font-bold text-sm text-foreground">5.0</span>
+          </div>
+          <div className="flex items-center gap-0.5 text-amber-400">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Star key={i} className="size-4 fill-amber-400 text-amber-400" />
+            ))}
+          </div>
+          <span className="text-xs font-medium text-muted-foreground border-l border-border pl-3">
+            Google & Patient Reviews
+          </span>
+        </div>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-3 items-stretch">
+        {combinedReviews.map((item, index) => (
           <article
-            key={item.name}
-            className={`relative flex min-h-72 flex-col overflow-hidden rounded-lg p-6 transition duration-300 hover:-translate-y-1 ${
-              item.feature ? "bg-footer text-hero-foreground" : "bg-secondary"
-            }`}
+            key={item.id ?? `${item.name}-${index}`}
+            className="group relative flex flex-col justify-between rounded-2xl sm:rounded-3xl border border-border/80 bg-card p-6 sm:p-7 transition-all duration-300 hover:shadow-xl hover:border-primary/40 hover:-translate-y-1 shadow-xs h-full"
           >
-            {item.feature && (
-              <>
-                <img
-                  src={patientImage}
-                  alt="Marvin smiling"
-                  width={816}
-                  height={816}
-                  loading="lazy"
-                  className="absolute inset-0 h-full w-full object-cover opacity-65"
+            <div className="flex flex-col flex-1">
+              {/* Header: Avatar, Name, Profile info, Google / Verified indicator */}
+              <div className="flex items-start justify-between gap-3 pb-4 border-b border-border/60 min-h-[58px]">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="relative size-11 sm:size-12 rounded-full overflow-hidden shrink-0 border-2 border-background shadow-xs ring-1 ring-border flex items-center justify-center bg-gradient-to-br from-primary/15 via-accent/30 to-secondary text-primary font-bold text-base">
+                    {item.avatar ? (
+                      <img
+                        src={item.avatar}
+                        alt={`${item.name}'s profile photo`}
+                        className="size-full object-cover"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <span>{item.name.charAt(0).toUpperCase()}</span>
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="font-bold text-sm sm:text-base text-foreground truncate group-hover:text-primary transition-colors">
+                      {item.name}
+                    </h3>
+                    <p className="text-[11px] sm:text-xs text-muted-foreground truncate font-medium mt-0.5">
+                      {item.profile}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Badge */}
+                {item.isDynamic ? (
+                  <div
+                    className="flex items-center gap-1 shrink-0 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 text-[10px] font-semibold"
+                    title="Verified Approved Patient Review"
+                  >
+                    <CheckCircle2 className="size-3 text-emerald-600 shrink-0" />
+                    <span>Approved</span>
+                  </div>
+                ) : (
+                  <div
+                    className="flex items-center gap-1 shrink-0 px-2 py-1 rounded-full bg-secondary/80 border border-border/60 text-[10px] font-semibold text-muted-foreground"
+                    title="Verified Google Review"
+                  >
+                    <svg className="size-3.5 shrink-0" viewBox="0 0 24 24">
+                      <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+                      <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
+                      <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.98 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+                      <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+                    </svg>
+                    <span className="hidden sm:inline">Google</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Rating stars */}
+              <div className="pt-4 pb-3 flex items-center gap-2 h-11">
+                <div className="flex items-center gap-0.5" aria-label={`${item.stars} out of 5 stars`}>
+                  {Array.from({ length: item.stars }).map((_, i) => (
+                    <Star key={i} className="size-4 fill-amber-400 text-amber-400" />
+                  ))}
+                </div>
+                {item.title && (
+                  <span className="text-xs font-semibold text-foreground/80 truncate">
+                    {item.title}
+                  </span>
+                )}
+              </div>
+
+              {/* Review Text */}
+              <div className="relative flex-1 flex flex-col">
+                <Quote
+                  size={20}
+                  className="text-primary/20 shrink-0 mb-2"
+                  fill="currentColor"
                 />
-
-                <div className="absolute inset-0 bg-footer/35" />
-              </>
-            )}
-
-            <div className="relative z-10 flex items-center gap-2 text-sm font-medium">
-              <span className="grid size-7 place-items-center rounded-full bg-primary text-xs text-primary-foreground">
-                {item.name.charAt(0)}
-              </span>
-
-              {item.name}
+                <p className="text-xs sm:text-sm text-foreground/85 leading-relaxed font-normal whitespace-pre-line flex-1">
+                  "{item.review}"
+                </p>
+              </div>
             </div>
 
-            <div className="relative z-10 mt-auto">
-              <Quote
-                size={25}
-                className={item.feature ? "text-primary" : "text-foreground"}
-                fill="currentColor"
-              />
-
-              <p className="mt-4 text-sm font-medium leading-6">{item.quote}</p>
+            {/* Bottom verified badge */}
+            <div className="mt-6 pt-3.5 border-t border-border/60 flex items-center justify-between text-[11px] text-muted-foreground shrink-0">
+              <span className="inline-flex items-center gap-1.5 font-medium text-[#008953]">
+                <CheckCircle2 className="size-3.5" />
+                Verified Patient
+              </span>
+              <span className="text-[10px] text-muted-foreground/80">
+                Dr. Divya Clinic
+              </span>
             </div>
           </article>
         ))}
       </div>
+
+      <AddFeedbackDialog
+        open={feedbackDialogOpen}
+        onOpenChange={setFeedbackDialogOpen}
+        onSubmitted={loadApprovedFeedback}
+      />
     </section>
   );
 }

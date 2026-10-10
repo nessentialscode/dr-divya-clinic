@@ -1,6 +1,6 @@
 import { Loader2, Stethoscope } from "lucide-react";
 import { useState } from "react";
-import { getDoctorSortOrder, normalizeDoctorDisplayName } from "@/lib/utils";
+import { getDoctorSortOrder, normalizeDoctorDisplayName, normalizeDoctorSpecialty } from "@/lib/utils";
 
 export interface DoctorRecord {
   id: string;
@@ -74,7 +74,7 @@ export function DoctorAvailability({
                     {normalizeDoctorDisplayName(doctor.name)}
                   </h3>
                   <p className="text-[11px] sm:text-xs text-slate-500 leading-snug mt-0.5 line-clamp-2">
-                    {doctor.specialty}
+                    {normalizeDoctorSpecialty(doctor.name, doctor.specialty)}
                   </p>
                 </div>
 

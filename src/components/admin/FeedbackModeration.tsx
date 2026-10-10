@@ -26,10 +26,16 @@ export function FeedbackModeration({
   onDeleteFeedback,
 }: FeedbackModerationProps) {
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"pending" | "approved" | "rejected" | "all">("pending");
 
   const pendingCount = feedbackList.filter((f) => f.status === "pending").length;
   const approvedCount = feedbackList.filter((f) => f.status === "approved").length;
   const rejectedCount = feedbackList.filter((f) => f.status === "rejected").length;
+
+  const filteredList = feedbackList.filter((f) => {
+    if (activeTab === "all") return true;
+    return f.status === activeTab;
+  });
 
   const handleStatusChange = async (id: string, status: PatientFeedbackItem["status"]) => {
     try {
@@ -69,17 +75,70 @@ export function FeedbackModeration({
           </p>
         </div>
 
-        {/* Counter Badges Matching Screenshot 3 */}
-        <div className="flex items-center gap-1.5 flex-wrap self-start sm:self-auto">
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[11px] sm:text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200/70">
-            Pending <span className="font-extrabold">{pendingCount}</span>
-          </span>
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[11px] sm:text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/70">
-            Approved <span className="font-extrabold">{approvedCount}</span>
-          </span>
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[11px] sm:text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">
-            Rejected <span className="font-extrabold">{rejectedCount}</span>
-          </span>
+        {/* Counter Tab Buttons Matching Screenshot 2 */}
+        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100/90 border border-slate-200/70 self-start sm:self-auto">
+          <button
+            type="button"
+            onClick={() => setActiveTab("pending")}
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              activeTab === "pending"
+                ? "bg-white text-slate-900 shadow-xs border border-slate-200"
+                : "text-slate-600 hover:text-slate-900"
+            }`}
+          >
+            <span>Pending</span>
+            <span
+              className={`px-1.5 py-0.2 rounded-full text-[10px] font-extrabold ${
+                activeTab === "pending"
+                  ? "bg-amber-100 text-amber-800"
+                  : "bg-slate-200/80 text-slate-700"
+              }`}
+            >
+              {pendingCount}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab("approved")}
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              activeTab === "approved"
+                ? "bg-white text-slate-900 shadow-xs border border-slate-200"
+                : "text-slate-600 hover:text-slate-900"
+            }`}
+          >
+            <span>Approved</span>
+            <span
+              className={`px-1.5 py-0.2 rounded-full text-[10px] font-extrabold ${
+                activeTab === "approved"
+                  ? "bg-emerald-100 text-emerald-800"
+                  : "bg-slate-200/80 text-slate-700"
+              }`}
+            >
+              {approvedCount}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab("rejected")}
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              activeTab === "rejected"
+                ? "bg-white text-slate-900 shadow-xs border border-slate-200"
+                : "text-slate-600 hover:text-slate-900"
+            }`}
+          >
+            <span>Rejected</span>
+            <span
+              className={`px-1.5 py-0.2 rounded-full text-[10px] font-extrabold ${
+                activeTab === "rejected"
+                  ? "bg-slate-200 text-slate-800"
+                  : "bg-slate-200/80 text-slate-700"
+              }`}
+            >
+              {rejectedCount}
+            </span>
+          </button>
         </div>
       </div>
 
@@ -89,13 +148,19 @@ export function FeedbackModeration({
           <Loader2 size={16} className="animate-spin text-sky-600" />
           <span className="text-xs">Loading feedback entries...</span>
         </div>
-      ) : feedbackList.length === 0 ? (
+      ) : filteredList.length === 0 ? (
         <div className="py-8 text-center text-xs text-slate-400">
-          No feedback or testimonials submitted yet.
+          {activeTab === "pending"
+            ? "No pending feedback submissions found."
+            : activeTab === "approved"
+              ? "No approved feedback submissions found."
+              : activeTab === "rejected"
+                ? "No rejected feedback submissions found."
+                : "No feedback or testimonials submitted yet."}
         </div>
       ) : (
         <div className="space-y-3">
-          {feedbackList.map((item) => {
+          {filteredList.map((item) => {
             const isUpdating = updatingId === item.id;
 
             return (

@@ -389,6 +389,11 @@ export const servicesData: ServiceDetail[] = [
     estimatedDuration: "6 – 18 months depending on case complexity",
     recommendedSpecialists: [
       {
+        id: "7f053965-dbd0-4355-89f4-b2586b4bb554",
+        name: "Dr. Ayisha",
+        role: "Orthodontist | Invisalign®️ Certified Provider",
+      },
+      {
         id: "21b9ec44-c71d-4074-b5a8-d9d15024b89e",
         name: "Dr. Roshan",
         role: "Consultant Orthodontist",
@@ -740,6 +745,11 @@ export const servicesData: ServiceDetail[] = [
         id: "631e3a56-84f3-4658-a269-d1e4566fa8e7",
         name: "Dr. Divya Lijeesh",
         role: "Lead Resident Dental Surgeon",
+      },
+      {
+        id: "a3b89012-789a-4bc3-9de1-23456789abcd",
+        name: "Dr. Fathima Roosa Fidha",
+        role: "Resident Dental Surgeon",
       },
       {
         id: "5a396bc6-1c4b-4ca4-b378-3543b4a5cb99",
@@ -1321,14 +1331,14 @@ export const servicesData: ServiceDetail[] = [
     estimatedDuration: "20 – 35 minutes",
     recommendedSpecialists: [
       {
-        id: "7f053965-dbd0-4355-89f4-b2586b4bb554",
-        name: "Dr. Ayisha",
-        role: "Consultant Pedodontist",
-      },
-      {
         id: "631e3a56-84f3-4658-a269-d1e4566fa8e7",
         name: "Dr. Divya Lijeesh",
         role: "Resident Dental Surgeon",
+      },
+      {
+        id: "7f053965-dbd0-4355-89f4-b2586b4bb554",
+        name: "Dr. Ayisha",
+        role: "Orthodontist | Early Orthodontic Care",
       },
     ],
     faqs: [

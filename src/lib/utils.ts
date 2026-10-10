@@ -16,7 +16,7 @@ export function normalizeDoctorDisplayName(name: string): string {
   if (clean.includes("lijeesh")) {
     return "Dr. Lijeesh Kadambil";
   }
-  if (clean.includes("fathima") || clean.includes("roosa") || clean.includes("fidha")) {
+  if (clean.includes("fathima") || clean.includes("roosa") || clean.includes("fidha") || clean.includes("fida")) {
     return "Dr. Fathima Roosa Fidha";
   }
   if (clean.includes("ayisha") || clean.includes("aisha") || (clean.includes("ratheesh") && !clean.includes("tk"))) {
@@ -47,7 +47,7 @@ export function getDoctorSortOrder(name: string): number {
 
   if (clean.includes("divya")) return 0; // Card 1: Dr. Divya Lijeesh
   if (clean.includes("lijeesh")) return 1; // Card 2: Dr. Lijeesh Kadambil
-  if (clean.includes("fathima") || clean.includes("roosa") || clean.includes("fidha")) return 2; // Card 3: Dr. Fathima Roosa Fidha
+  if (clean.includes("fathima") || clean.includes("roosa") || clean.includes("fidha") || clean.includes("fida")) return 2; // Card 3: Dr. Fathima Roosa Fidha
   if (clean.includes("ayisha") || clean.includes("aisha") || (clean.includes("ratheesh") && !clean.includes("tk"))) return 3; // Card 4: Dr. Ayisha
   if (clean.includes("rathish") || clean.includes("tk")) return 4; // Card 5: Dr. Rathish TK
   if (clean.includes("anas") || clean.includes("nidhash") || clean.includes("siddik")) return 5; // Card 6: Dr. Nidhash Siddik
@@ -56,3 +56,16 @@ export function getDoctorSortOrder(name: string): number {
   if (clean.includes("haris")) return 8; // Card 9: Dr. Mohammed Haris PM
   return 999;
 }
+
+export function normalizeDoctorSpecialty(name: string, fallback?: string): string {
+  if (!name) return fallback || "";
+  const clean = name.toLowerCase().replace(/[^a-z]/g, "");
+  if (clean.includes("ayisha") || clean.includes("aisha")) {
+    return "Orthodontist | Invisalign®️ Certified Provider";
+  }
+  if (clean.includes("lijeesh")) {
+    return "Chief Dental Surgeon";
+  }
+  return fallback || "";
+}
+
